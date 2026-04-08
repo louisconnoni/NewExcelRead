@@ -112,3 +112,24 @@ if uploaded_file is not None:
 
             st.metric(
                 "ERE Improvement",
+                f"{results['ERE Improvement']:.2f}%"
+            )
+
+            st.metric(
+                "ERF",
+                f"{results['ERF']:.2f}"
+            )
+
+
+    # ----------------------------------------------
+    # COMPARISON TABLE (OPTIONAL BUT VERY USEFUL)
+    # ----------------------------------------------
+    st.subheader("Comparison Table")
+
+    comparison_df = pd.DataFrame(all_results)
+    st.dataframe(comparison_df)
+
+
+else:
+    st.info("Please upload an Excel file to begin.")
+``
