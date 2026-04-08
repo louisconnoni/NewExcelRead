@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from CCSv8 import run_model
+from Exec import run_model
 
 
 # --------------------------------------------------
