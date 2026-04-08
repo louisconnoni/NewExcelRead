@@ -14,7 +14,7 @@ def load_input_data(excel_file):
     return inputdata, columns, index
 
 
-def run_model(excel_file):
+def run_model(inputdata):
     """
     Entry point for the WHR model.
     """
