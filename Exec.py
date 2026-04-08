@@ -18,7 +18,10 @@ def run_model(excel_file):
     """
     Entry point for the WHR model.
     """
-    inputdata, columns, index = load_input_data(excel_file)
+    
+    columns = len(inputdata.columns)
+    index = 1
+
 
 ## Raza's Work
 
