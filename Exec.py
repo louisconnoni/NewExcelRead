@@ -1,30 +1,27 @@
-import matplotlib.pyplot as plt
-import math as math
-import numpy as np
-import cmath as cmath
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+CCS Waste Heat Recovery Model
+"""
+
 import pandas as pd
+import numpy as np
+import math
 import numpy_financial as nf
-
-## loading excel file
-def load_input_data(excel_file): 
-    
-    inputdata = pd.read_excel(excel_file)
-    columns = len(inputdata.columns)
-    index = 1
-    return inputdata, columns, index
+import matplotlib.pyplot as plt
 
 
-def run_model(inputdata):
-    """
-    Entry point for the WHR model.
-    """
+def run_model(inputdata: pd.DataFrame):
+   
+
     
     columns = len(inputdata.columns)
     index = 1
 
-
-## Raza's Work
-
+    # --------------------------------------------------
+    # >>> BEGIN CCS CALCULATIONS <<<
+    # --------------------------------------------------
     op = inputdata.iloc[:, index]
     
     # INPUTS
@@ -436,16 +433,18 @@ def run_model(inputdata):
     # Define symmetric error values for each bar
     errors = [abs(np.linalg.norm(uncertainties)), 0, 0, 0, 0]
 
+    # --------------------------------------------------
+    # >>> END CCS CALCULATIONS <<<
+    # --------------------------------------------------
 
-
-
-
-    
-    # PACKAGE FINAL RESULTS
-    
-    
+    # --------------------------------------------------
+    # POST-PROCESSING (no math change)
+    # --------------------------------------------------
     ERE_improvement = EREpercent * -1
-    
+
+    # --------------------------------------------------
+    # PACKAGE RESULTS FOR STREAMLIT
+    # --------------------------------------------------
     results = {
         "Total Profit": totalprofit,
         "Total Water Saved": totalwatersaved,
@@ -456,15 +455,29 @@ def run_model(inputdata):
         "Social Score": socialscore,
         "Carbon Score": carbonscore,
         "ERE Improvement": ERE_improvement,
-        "ERF": ERF
+        "ERF": erf
     }
 
     return results
 
-    while index < columns:
-        print(
-            "DISCLAIMER: Calculations are dependent upon assumptions described in manual"
-        )
-        index += 1
 
-    return inputdata
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
