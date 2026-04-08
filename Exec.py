@@ -456,7 +456,7 @@ def run_model(excel_file):
         "ERF": erf
     }
 
-return results
+    return results
 
     while index < columns:
         print(
