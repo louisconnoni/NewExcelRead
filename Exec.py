@@ -433,7 +433,30 @@ def run_model(excel_file):
     # Define symmetric error values for each bar
     errors = [abs(np.linalg.norm(uncertainties)), 0, 0, 0, 0]
 
-  
+
+
+
+
+    
+    # PACKAGE FINAL RESULTS
+    
+    
+    ERE_improvement = EREpercent * -1
+    
+    results = {
+        "Total Profit": totalprofit,
+        "Total Water Saved": totalwatersaved,
+        "Total Carbon Saved": totalcarbonsaved,
+        "Total Score": totalscore,
+        "Water Score": waterscore,
+        "Economic Score": econscore,
+        "Social Score": socialscore,
+        "Carbon Score": carbonscore,
+        "ERE Improvement": ERE_improvement,
+        "ERF": erf
+    }
+
+return results
 
     while index < columns:
         print(
