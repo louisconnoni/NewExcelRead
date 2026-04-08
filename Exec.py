@@ -453,7 +453,7 @@ def run_model(excel_file):
         "Social Score": socialscore,
         "Carbon Score": carbonscore,
         "ERE Improvement": ERE_improvement,
-        "ERF": erf
+        "ERF": ERF
     }
 
     return results
