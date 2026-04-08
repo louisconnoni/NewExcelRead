@@ -1,50 +1,114 @@
 import streamlit as st
 import pandas as pd
-from Exec import run_model
 
-st.set_page_config(page_title="WHR Model", layout="wide")
+from CCSv8 import run_model
+
+
+# --------------------------------------------------
+# STREAMLIT PAGE CONFIGURATION
+# --------------------------------------------------
+st.set_page_config(
+    page_title="Waste Heat Recovery Model",
+    layout="wide"
+)
+
 st.title("Waste Heat Recovery Model")
+st.write(
+    "Upload an Excel file to evaluate multiple waste heat recovery scenarios."
+)
 
+
+# --------------------------------------------------
+# FILE UPLOAD
+# --------------------------------------------------
 uploaded_file = st.file_uploader(
-    "Upload Excel file",
+    "Upload input Excel file",
     type=["xlsx"]
 )
 
-if uploaded_file:
-    df = pd.read_excel(uploaded_file)
 
-    st.subheader("Input Data")
-    st.dataframe(df)
+# --------------------------------------------------
+# MAIN APP LOGIC
+# --------------------------------------------------
+if uploaded_file is not None:
 
-    # Dictionary to store results for each column
+    # ----------------------------------------------
+    # READ INPUT EXCEL FILE
+    # ----------------------------------------------
+    input_df = pd.read_excel(uploaded_file)
+
+    st.subheader("Input Data Preview")
+    st.dataframe(input_df)
+
+
+    # ----------------------------------------------
+    # RUN MODEL FOR EACH COLUMN (SCENARIO)
+    # ----------------------------------------------
     all_results = {}
 
-    for column_name in df.columns:
-        # Extract ONE column as DataFrame
-        column_df = df[[column_name]]
+    for column_name in input_df.columns:
+        # Extract ONE column as a DataFrame
+        scenario_df = input_df[[column_name]]
 
-        # Run model
-        results = run_model(column_df)
+        # Run CCS model (calculations happen inside CCSv8.py)
+        results = run_model(scenario_df)
 
+        # Store results
         all_results[column_name] = results
 
-        st.subheader("Model Results")
-        
-        cols = st.columns(len(all_results))
-        
-        for col, (case_name, results) in zip(cols, all_results.items()):
-            with col:
-                st.markdown(f"### {case_name}")
-        
-                st.metric("Total Profit", f"${results['Total Profit']:,.0f}")
-                st.metric("Total Water Saved", f"{results['Total Water Saved']:,.2f}")
-                st.metric("Total Carbon Saved", f"{results['Total Carbon Saved']:,.2f}")
-        
-                st.metric("Total Score", f"{results['Total Score']:.2f}")
-                st.metric("Water Score", f"{results['Water Score']:.2f}")
-                st.metric("Economic Score", f"{results['Economic Score']:.2f}")
-                st.metric("Social Score", f"{results['Social Score']:.2f}")
-                st.metric("Carbon Score", f"{results['Carbon Score']:.2f}")
-        
-                st.metric("ERE Improvement", f"{results['ERE Improvement']:.2f}%")
-                st.metric("ERF", f"{results['ERF']:.2f}")
+
+    # ----------------------------------------------
+    # KPI DISPLAY (SIDE-BY-SIDE)
+    # ----------------------------------------------
+    st.subheader("Model Results")
+
+    result_columns = st.columns(len(all_results))
+
+    for col, (scenario_name, results) in zip(
+        result_columns, all_results.items()
+    ):
+        with col:
+            st.markdown(f"### {scenario_name}")
+
+            st.metric(
+                "Total Profit",
+                f"${results['Total Profit']:,.0f}"
+            )
+
+            st.metric(
+                "Total Water Saved",
+                f"{results['Total Water Saved']:,.2f}"
+            )
+
+            st.metric(
+                "Total Carbon Saved",
+                f"{results['Total Carbon Saved']:,.2f}"
+            )
+
+            st.metric(
+                "Total Score",
+                f"{results['Total Score']:.2f}"
+            )
+
+            st.metric(
+                "Water Score",
+                f"{results['Water Score']:.2f}"
+            )
+
+            st.metric(
+                "Economic Score",
+                f"{results['Economic Score']:.2f}"
+            )
+
+            st.metric(
+                "Social Score",
+                f"{results['Social Score']:.2f}"
+            )
+
+            st.metric(
+                "Carbon Score",
+                f"{results['Carbon Score']:.2f}"
+            )
+
+            st.metric(
+                "ERE Improvement",
