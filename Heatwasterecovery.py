@@ -28,23 +28,23 @@ if uploaded_file:
 
         all_results[column_name] = results
 
-st.subheader("Model Results")
-
-cols = st.columns(len(all_results))
-
-for col, (case_name, results) in zip(cols, all_results.items()):
-    with col:
-        st.markdown(f"### {case_name}")
-
-        st.metric("Total Profit", f"${results['Total Profit']:,.0f}")
-        st.metric("Total Water Saved", f"{results['Total Water Saved']:,.2f}")
-        st.metric("Total Carbon Saved", f"{results['Total Carbon Saved']:,.2f}")
-
-        st.metric("Total Score", f"{results['Total Score']:.2f}")
-        st.metric("Water Score", f"{results['Water Score']:.2f}")
-        st.metric("Economic Score", f"{results['Economic Score']:.2f}")
-        st.metric("Social Score", f"{results['Social Score']:.2f}")
-        st.metric("Carbon Score", f"{results['Carbon Score']:.2f}")
-
-        st.metric("ERE Improvement", f"{results['ERE Improvement']:.2f}%")
-        st.metric("ERF", f"{results['ERF']:.2f}")
+        st.subheader("Model Results")
+        
+        cols = st.columns(len(all_results))
+        
+        for col, (case_name, results) in zip(cols, all_results.items()):
+            with col:
+                st.markdown(f"### {case_name}")
+        
+                st.metric("Total Profit", f"${results['Total Profit']:,.0f}")
+                st.metric("Total Water Saved", f"{results['Total Water Saved']:,.2f}")
+                st.metric("Total Carbon Saved", f"{results['Total Carbon Saved']:,.2f}")
+        
+                st.metric("Total Score", f"{results['Total Score']:.2f}")
+                st.metric("Water Score", f"{results['Water Score']:.2f}")
+                st.metric("Economic Score", f"{results['Economic Score']:.2f}")
+                st.metric("Social Score", f"{results['Social Score']:.2f}")
+                st.metric("Carbon Score", f"{results['Carbon Score']:.2f}")
+        
+                st.metric("ERE Improvement", f"{results['ERE Improvement']:.2f}%")
+                st.metric("ERF", f"{results['ERF']:.2f}")
