@@ -2,49 +2,49 @@ import streamlit as st
 import pandas as pd
 from Exec import run_model
 
-st.set_page_config(
-    page_title="Waste Heat Recovery Model",
-    layout="wide"
-)
-
+st.set_page_config(page_title="WHR Model", layout="wide")
 st.title("Waste Heat Recovery Model")
-st.write("Upload an Excel file to run the WHR model.")
 
 uploaded_file = st.file_uploader(
-    "Choose an Excel file",
+    "Upload Excel file",
     type=["xlsx"]
 )
 
-if uploaded_file is not None:
-    st.success("File uploaded successfully")
+if uploaded_file:
+    df = pd.read_excel(uploaded_file)
 
-    # Run model
-    inputdata = run_model(uploaded_file)
+    st.subheader("Input Data")
+    st.dataframe(df)
 
-    st.subheader("Input Data Preview")
-    st.dataframe(inputdata)
+    # Dictionary to store results for each column
+    all_results = {}
 
-    results = run_model(uploaded_file)
+    for column_name in df.columns:
+        # Extract ONE column as DataFrame
+        column_df = df[[column_name]]
 
-    st.subheader("Waste Heat Recovery Results")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
+        # Run model
+        results = run_model(column_df)
+
+        all_results[column_name] = results
+
+st.subheader("Model Results")
+
+cols = st.columns(len(all_results))
+
+for col, (case_name, results) in zip(cols, all_results.items()):
+    with col:
+        st.markdown(f"### {case_name}")
+
         st.metric("Total Profit", f"${results['Total Profit']:,.0f}")
         st.metric("Total Water Saved", f"{results['Total Water Saved']:,.2f}")
         st.metric("Total Carbon Saved", f"{results['Total Carbon Saved']:,.2f}")
-    
-    with col2:
+
         st.metric("Total Score", f"{results['Total Score']:.2f}")
         st.metric("Water Score", f"{results['Water Score']:.2f}")
         st.metric("Economic Score", f"{results['Economic Score']:.2f}")
-    
-    with col3:
         st.metric("Social Score", f"{results['Social Score']:.2f}")
         st.metric("Carbon Score", f"{results['Carbon Score']:.2f}")
+
         st.metric("ERE Improvement", f"{results['ERE Improvement']:.2f}%")
         st.metric("ERF", f"{results['ERF']:.2f}")
-
-else:
-    st.info("Please upload an Excel file to continue.")
