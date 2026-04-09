@@ -445,7 +445,7 @@ def compute_metrics_per_column(inputdata):
         
 
         results.append({
-            "Case": col,
+            "Case": column,
             "Total Profit": totalprofit,
             "Total Carbon Saved": totalcarbonsaved,
             "Total Water Saved": totalwatersaved,
