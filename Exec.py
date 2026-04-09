@@ -263,6 +263,7 @@ def run_model(inputdata: pd.DataFrame):
        
        EREchange = EREnew - ERE
        EREpercent = EREchange*100/ERE
+       ERE_improvement = EREpercent * -1
        
      
        
@@ -423,6 +424,8 @@ def run_model(inputdata: pd.DataFrame):
        
            EREchange = EREnew - ERE
            EREpercent = EREchange*100/ERE
+          
+            
            sensitivities[counter] = (totalscore2-totalscore)/(0.01*(variables[counter]/1.01))
            uncertainties[counter] = sensitivities[counter] * 0.1 * variables[counter]/1.01
            counter = counter + 1
@@ -443,7 +446,7 @@ def run_model(inputdata: pd.DataFrame):
     # --------------------------------------------------
     # POST-PROCESSING (no math change)
     # --------------------------------------------------
-    ERE_improvement = EREpercent * -1
+    
 
     # --------------------------------------------------
     # PACKAGE RESULTS FOR STREAMLIT
