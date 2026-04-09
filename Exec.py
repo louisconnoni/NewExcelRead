@@ -274,9 +274,6 @@ def compute_metrics_per_column(inputdata):
         EREchange = EREnew - ERE
         EREpercent = EREchange*100/ERE
         
-        print("Total Profit = ", totalprofit, "Total Carbon Saved = ", totalcarbonsaved, "Total Water Saved = ", totalwatersaved)
-        print("Water Score = ", waterscore, "Carbon Score = ", carbonscore, "Economics Score = ",econscore, "Scoial Score = ", socialscore)
-        print("Total Score = ", totalscore, "ERE improvement = ", EREpercent*-1, "%", "ERF = ", ERF)
         
         #sensitivity and uncertainty 
         counter = 0
@@ -457,7 +454,6 @@ def compute_metrics_per_column(inputdata):
             "Economic Score": econscore,
             "Social Score": socialscore,
             "Total Score": totalscore,
-            "ERE %": EREpercent,
             "ERF": ERF
         })
 
