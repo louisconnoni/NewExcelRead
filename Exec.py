@@ -457,6 +457,6 @@ def compute_metrics_per_column(inputdata):
             "ERF": ERF
         })
 
-         index = index+1
+        index = index+1
 
     return pd.DataFrame(results)
