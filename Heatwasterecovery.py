@@ -12,4 +12,5 @@ if uploaded_file:
 
     if st.button("Run Model"):
         results = run_ccs_model(inputdata)
+        st.dataframe(results_df, use_container_width=True)
         st.success("Model completed")
