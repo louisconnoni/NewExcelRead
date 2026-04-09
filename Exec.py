@@ -463,7 +463,7 @@ def run_model(inputdata: pd.DataFrame):
         "ERE Improvement": ERE_improvement,
         "ERF": erf
     }
-      index = index+1
+   index = index+1
    
     return results
 
