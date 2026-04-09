@@ -428,6 +428,16 @@ def run_model_for_column(op):
 
  
      return {
-        "Total Profit": totalprofit,
+      "Total Profit": totalprofit,
+      "Total Carbon Saved": totalcarbonsaved,
+      "Total Water Saved": totalwatersaved,
+      "Total Score" : totalscore,
+      "Carbon Score": carbonscore,
+      "Water Score": waterscore,
+      "Economic Score": econscore,
+      "Social Score": socialscore,
+      "ERE improvement": EREpercent*-1,
+      "ERF" : ERF
+      
         
     }
