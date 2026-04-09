@@ -1,4 +1,4 @@
-from CCSv8 import run_ccs_model
+from Exec import run_ccs_model
 import streamlit as st
 import pandas as pd
 
