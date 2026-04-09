@@ -1,18 +1,39 @@
+
+import numpy as np
+import pandas as pd
+import math
+import cmath
+import numpy_financial as nf
+import matplotlib.pyplot as plt
+
+
+
 def run_ccs_model(inputdata):
-    import numpy as np
-    import pandas as pd
-    import math
-    import cmath
-    import numpy_financial as nf
-    import matplotlib.pyplot as plt
+    
+
+    
+    if inputdata.empty:
+        raise ValueError("Input data is empty")
+
+    
+    results_df = compute_metrics_per_column(inputdata)
+
+   
+
+    return results_df
+
+
+
+def compute_metrics_per_column(inputdata):
+    results = []
 
     columns = len(inputdata.columns)
     index = 1
-
-    while index < columns:
-
-        op = inputdata.iloc[:, index]
     
+    while(index<columns):
+    
+        op = inputdata.iloc[:, index]
+        
         # INPUTS
         # Heat
         Q = op[2]#1e6  # waste heat transferred to CCS, watts
@@ -423,8 +444,23 @@ def run_ccs_model(inputdata):
         values = [totalscore, carbonscore, econscore, waterscore, socialscore]
         # Define symmetric error values for each bar
         errors = [abs(np.linalg.norm(uncertainties)), 0, 0, 0, 0]
+        
+        
 
-        index += 1
+        results.append({
+            "Case": col,
+            "Total Profit": totalprofit,
+            "Total Carbon Saved": totalcarbonsaved,
+            "Total Water Saved": totalwatersaved,
+            "Water Score": waterscore,
+            "Carbon Score": carbonscore,
+            "Economic Score": econscore,
+            "Social Score": socialscore,
+            "Total Score": totalscore,
+            "ERE %": EREpercent,
+            "ERF": ERF
+        })
 
-    # return results you care about
-    return inputdata
+         index = index+1
+
+    return pd.DataFrame(results)
