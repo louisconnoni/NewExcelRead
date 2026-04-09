@@ -435,7 +435,7 @@ def run_model(inputdata: pd.DataFrame):
        values = [totalscore, carbonscore, econscore, waterscore, socialscore]
        # Define symmetric error values for each bar
        errors = [abs(np.linalg.norm(uncertainties)), 0, 0, 0, 0]
-       index = index+1
+       
 
       
 
@@ -463,7 +463,8 @@ def run_model(inputdata: pd.DataFrame):
         "ERE Improvement": ERE_improvement,
         "ERF": erf
     }
-
+   index = index+1
+   
     return results
 
 
