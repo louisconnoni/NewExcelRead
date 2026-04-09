@@ -23,7 +23,7 @@ if uploaded_file:
     # =========================
     # Run Model
     # =========================
-    if st.button("Run Model for All Scenarios"):
+    if st.button("Run Model"):
 
         results_list = []
 
@@ -42,6 +42,12 @@ if uploaded_file:
         # Convert to DataFrame
         results_df = pd.DataFrame(results_list)
 
+
+
+        chart_type = st.radio(
+            "Select Visualization Type",
+            ["Standard Bar Chart", "Stacked Sustainability Chart"]
+            )
         # =========================
         # Display Results
         # =========================
