@@ -57,34 +57,59 @@ if uploaded_file:
         # =========================
         # Plot Results
         # =========================
-        if not results_df.empty:
-
-            st.subheader("Comparison Plot")
-
-            numeric_cols = results_df.select_dtypes(include="number").columns
-
-            selected_metrics = st.multiselect(
-                "Select metrics to plot",
-                numeric_cols,
-                default=list(numeric_cols[:2])
+        if chart_type == "Standard Bar Chart":
+            fig, ax = plt.subplots()
+        
+            metrics = st.multiselect(
+                "Select metrics",
+                ["Total Score", "Carbon Score", "Economic Score", "Water Score", "Social Score"],
+                default=["Total Score"]
             )
+        
+            for metric in metrics:
+                ax.bar(results_df["Scenario"], results_df[metric], label=metric)
+        
+            ax.set_ylabel("Value")
+            ax.set_xlabel("Scenario")
+            ax.legend()
+            plt.xticks(rotation=45)
+        
+            st.pyplot(fig)
+        if chart_type == "Stacked Sustainability Chart":
 
-            if selected_metrics:
-                fig, ax = plt.subplots()
-
-                for metric in selected_metrics:
-                    ax.plot(
-                        results_df["Scenario"],
-                        results_df[metric],
-                        marker='o',
-                        label=metric
-                    )
-
-                ax.set_ylabel("Value")
-                ax.set_xlabel("Scenario")
-                ax.legend()
-                plt.xticks(rotation=45)
-
-                st.pyplot(fig)
-
+            fig, ax = plt.subplots()
+        
+            scenarios = results_df["Scenario"]
+        
+            carbon = results_df["Carbon Score"]
+            econ = results_df["Economic Score"]
+            water = results_df["Water Score"]
+            social = results_df["Social Score"]
+        
+            # Stack bars
+            ax.bar(scenarios, carbon, label="Carbon")
+            ax.bar(scenarios, econ, bottom=carbon, label="Economic")
+            ax.bar(scenarios, water, bottom=carbon+econ, label="Water")
+            ax.bar(scenarios, social, bottom=carbon+econ+water, label="Social")
+        
+            # Total height for error bar placement
+            totals = carbon + econ + water + social
+        
+            # Error bars
+            if "errors" in results_df.columns:
+                ax.errorbar(
+                    scenarios,
+                    totals,
+                    yerr=results_df["errors"],
+                    fmt='none',
+                    ecolor='black',
+                    capsize=5
+                )
+        
+            ax.set_ylabel("Total Score")
+            ax.set_xlabel("Scenario")
+            ax.legend()
+            plt.xticks(rotation=45)
+        
+            st.pyplot(fig)
         
