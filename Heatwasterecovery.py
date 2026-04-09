@@ -44,15 +44,17 @@ if uploaded_file:
 
 
 
-        chart_type = st.radio(
-            "Select Visualization Type",
-            ["Standard Bar Chart", "Stacked Sustainability Chart"]
-            )
+        
         # =========================
         # Display Results
         # =========================
         st.subheader("Results Table")
         st.dataframe(results_df)
+
+        chart_type = st.radio(
+            "Select Visualization Type",
+            ["Standard Bar Chart", "Stacked Sustainability Chart"]
+            )
 
         # =========================
         # Plot Results
