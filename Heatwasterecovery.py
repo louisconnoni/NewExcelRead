@@ -126,15 +126,7 @@ if uploaded_file:
                     totals = carbon + econ + water + social
 
                     # Error bars (if available)
-                    if "errors" in results_df.columns:
-                        ax.errorbar(
-                            scenarios,
-                            totals,
-                            yerr=results_df["errors"],
-                            fmt='none',
-                            ecolor='black',
-                            capsize=5
-                        )
+                    
 
                     ax.set_ylabel("Total Score")
                     ax.set_xlabel("Scenario")
