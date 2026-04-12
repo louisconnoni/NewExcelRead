@@ -437,7 +437,8 @@ def run_model_for_column(op):
       "Economic Score": econscore,
       "Social Score": socialscore,
       "ERE improvement": EREpercent*-1,
-      "ERF" : ERF
+      "ERF" : ERF,
+      "Errors": errors
       
         
     }
