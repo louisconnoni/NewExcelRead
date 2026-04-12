@@ -125,11 +125,11 @@ if uploaded_file:
                     totals = carbon + econ + water + social
 
                     # Error bars (if available)
-                    if "Uncertainty" in results_df.columns:
+                    if "errors" in results_df.columns:
                         ax.errorbar(
                             scenarios,
                             totals,
-                            yerr=results_df["Uncertainty"],
+                            yerr=results_df["errors"],
                             fmt='none',
                             ecolor='black',
                             capsize=5
