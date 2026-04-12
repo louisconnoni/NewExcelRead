@@ -426,6 +426,10 @@ def run_model_for_column(op):
      # Define symmetric error values for each bar
      errors = [abs(np.linalg.norm(uncertainties)), 0, 0, 0, 0]
 
+
+
+     scoreweight = [Sc,Se,Sw,Sscocial]
+
  
      return {
       "Total Profit": totalprofit,
@@ -438,7 +442,8 @@ def run_model_for_column(op):
       "Social Score": socialscore,
       "ERE improvement": EREpercent*-1,
       "ERF" : ERF,
-      "Error": errors[0]
+      "Error": errors[0],
+      "weighting":scoreweight
     
       
         
