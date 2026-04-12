@@ -46,44 +46,44 @@ if uploaded_file:
 
     if "results_df" in st.session_state:
 
-    results_df = st.session_state["results_df"]
-
-    chart_type = st.radio(
-        "Select Visualization Type",
-        ["Standard Bar Chart", "Stacked Sustainability Chart"]
-    )
-
-    import matplotlib.pyplot as plt
-
-    if chart_type == "Stacked Sustainability Chart":
-
-        fig, ax = plt.subplots()
-
-        scenarios = results_df["Scenario"]
-
-        carbon = results_df["Carbon Score"]
-        econ = results_df["Economic Score"]
-        water = results_df["Water Score"]
-        social = results_df["Social Score"]
-
-        ax.bar(scenarios, carbon, label="Carbon")
-        ax.bar(scenarios, econ, bottom=carbon, label="Economic")
-        ax.bar(scenarios, water, bottom=carbon+econ, label="Water")
-        ax.bar(scenarios, social, bottom=carbon+econ+water, label="Social")
-
-        totals = carbon + econ + water + social
-
-        if "Uncertainty" in results_df.columns:
-            ax.errorbar(
-                scenarios,
-                totals,
-                yerr=results_df["Uncertainty"],
-                fmt='none',
-                ecolor='black',
-                capsize=5
-            )
-
-        ax.legend()
+        results_df = st.session_state["results_df"]
+    
+        chart_type = st.radio(
+            "Select Visualization Type",
+            ["Standard Bar Chart", "Stacked Sustainability Chart"]
+        )
+    
+        import matplotlib.pyplot as plt
+    
+        if chart_type == "Stacked Sustainability Chart":
+    
+            fig, ax = plt.subplots()
+    
+            scenarios = results_df["Scenario"]
+    
+            carbon = results_df["Carbon Score"]
+            econ = results_df["Economic Score"]
+            water = results_df["Water Score"]
+            social = results_df["Social Score"]
+    
+            ax.bar(scenarios, carbon, label="Carbon")
+            ax.bar(scenarios, econ, bottom=carbon, label="Economic")
+            ax.bar(scenarios, water, bottom=carbon+econ, label="Water")
+            ax.bar(scenarios, social, bottom=carbon+econ+water, label="Social")
+    
+            totals = carbon + econ + water + social
+    
+            if "Uncertainty" in results_df.columns:
+                ax.errorbar(
+                    scenarios,
+                    totals,
+                    yerr=results_df["Uncertainty"],
+                    fmt='none',
+                    ecolor='black',
+                    capsize=5
+                )
+    
+            ax.legend()
         plt.xticks(rotation=45)
 
         st.pyplot(fig)
