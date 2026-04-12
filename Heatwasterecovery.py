@@ -120,7 +120,7 @@ if uploaded_file:
                     ax.bar(scenarios, carbon, label="Carbon")
                     ax.bar(scenarios, econ, bottom=carbon, label="Economic")
                     ax.bar(scenarios, water, bottom=carbon + econ, label="Water")
-                    ax.bar(scenarios, social, bottom=carbon + econ + water, label="Social", yerr = ploterror)
+                    ax.bar(scenarios, social, bottom=carbon + econ + water, label="Social", yerr = .1)
 
                     # Total for error bar
                     totals = carbon + econ + water + social
