@@ -1,5 +1,5 @@
 
-
+import numpy as np
 import streamlit as st
 import pandas as pd
 from Exec import run_model_for_column
@@ -72,22 +72,36 @@ if uploaded_file:
             if chart_type == "Standard Bar Chart":
 
                 metrics = st.multiselect(
+                metrics = st.multiselect(
                     "Select metrics to display",
                     [col for col in results_df.columns if col != "Scenario"],
-                    default=["Total Score"] if "Total Score" in results_df.columns else None
+                    default=["Carbon Score", "Economic Score", "Water Score", "Social Score"]
                 )
-
+                
                 if metrics:
                     fig, ax = plt.subplots()
-
-                    for metric in metrics:
-                        ax.bar(results_df["Scenario"], results_df[metric], label=metric)
-
+                
+                    scenarios = results_df["Scenario"]
+                    x = np.arange(len(scenarios))  # positions for scenarios
+                
+                    width = 0.8 / len(metrics)  # auto-fit bars nicely
+                
+                    for i, metric in enumerate(metrics):
+                        ax.bar(
+                            x + i * width,
+                            results_df[metric],
+                            width=width,
+                            label=metric
+                        )
+                
+                    # Center x-axis labels
+                    ax.set_xticks(x + width * (len(metrics) - 1) / 2)
+                    ax.set_xticklabels(scenarios, rotation=45)
+                
                     ax.set_ylabel("Value")
                     ax.set_xlabel("Scenario")
                     ax.legend()
-                    plt.xticks(rotation=45)
-
+                
                     st.pyplot(fig)
 
             # =========================
