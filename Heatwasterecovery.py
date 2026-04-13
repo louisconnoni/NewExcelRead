@@ -115,6 +115,7 @@ if uploaded_file:
                     water = results_df["Water Score"]
                     social = results_df["Social Score"]
                     ploterror = results_df["Error"]
+                    
 
                     # Stacked bars
                     ax.bar(scenarios, carbon, label="Carbon")
