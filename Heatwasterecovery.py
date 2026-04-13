@@ -115,13 +115,17 @@ if uploaded_file:
                     water = results_df["Water Score"]
                     social = results_df["Social Score"]
                     ploterror = results_df["Error"]
+                    carbonw =carbon*0.25
+                    econw = econ*0.25
+                    waterw = water*0.25
+                    socialw = water*0.25
                     
 
                     # Stacked bars
-                    ax.bar(scenarios, carbon, label="Carbon")
-                    ax.bar(scenarios, econ, bottom=carbon, label="Economic")
-                    ax.bar(scenarios, water, bottom=carbon + econ, label="Water")
-                    ax.bar(scenarios, social, bottom=carbon + econ + water, label="Social", yerr = .1)
+                    ax.bar(scenarios, carbonw, label="Carbon")
+                    ax.bar(scenarios, econw, bottom=carbonw, label="Economic")
+                    ax.bar(scenarios, waterw, bottom=carbonw + econw, label="Water")
+                    ax.bar(scenarios, socialw, bottom=carbonw + econw + waterw, label="Social", yerr = .1)
 
                     # Total for error bar
                     totals = carbon + econ + water + social
