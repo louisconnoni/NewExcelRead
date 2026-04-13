@@ -428,7 +428,7 @@ def run_model_for_column(op):
 
 
 
-     scoreweight = [Sc,Se,Sw,Sscocial]
+     
 
  
      return {
@@ -442,8 +442,7 @@ def run_model_for_column(op):
       "Social Score": socialscore,
       "ERE improvement": EREpercent*-1,
       "ERF" : ERF,
-      "Error": errors[0],
-      "weighting":scoreweight
+      "Error": errors[0]
     
       
         
