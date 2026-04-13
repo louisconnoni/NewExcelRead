@@ -71,7 +71,7 @@ if uploaded_file:
             # =========================
             if chart_type == "Standard Bar Chart":
 
-                metrics = st.multiselect(
+                
                 metrics = st.multiselect(
                     "Select metrics to display",
                     [col for col in results_df.columns if col != "Scenario"],
