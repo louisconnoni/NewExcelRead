@@ -118,7 +118,7 @@ if uploaded_file:
                     carbonw =carbon*0.25
                     econw = econ*0.25
                     waterw = water*0.25
-                    socialw = water*0.25
+                    socialw = social*0.25
                     
 
                     # Stacked bars
