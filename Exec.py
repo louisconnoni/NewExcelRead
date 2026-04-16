@@ -443,7 +443,7 @@ def run_model_for_column(op):
       "ERE improvement": EREpercent*-1,
       "ERF" : ERF,
       "Error": errors[0],
-      "Economic Weight":, Se
+      "Economic Weight":Se,
       "Water Weight":Sw,
       "Carbon Weight":Sc,
       "Social Weight":Ssocial
