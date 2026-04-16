@@ -133,7 +133,7 @@ if uploaded_file:
                     cweight = results_df["Carbon Weight"]
                     eweight = results_df["Economic Weight"]
                     wweight = results_df["Water Weight"]
-                    sweight = results_df["social Weight"]
+                    sweight = results_df["Social Weight"]
 
                     
                     carbonw =carbon*cweight
