@@ -160,7 +160,8 @@ if uploaded_file:
                     plt.xticks(rotation=45)
 
                     st.pyplot(fig)
-                    help = "Carbon Weighting"+cweight+"Water Weighting"+wweight+"Economic Weighting"+eweight+"Social Weighting"+sweight
+                    #help = "Carbon Weighting"+cweight+"Water Weighting"+wweight+"Economic Weighting"+eweight+"Social Weighting"+sweight
+                    help = "hello"
 
     else:
         st.info("Click 'Run Model for All Scenarios' to generate results.")
