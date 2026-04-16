@@ -76,7 +76,7 @@ if uploaded_file:
                 metrics = st.multiselect(
                     "Select metrics to display",
                     [col for col in results_df.columns if col != "Scenario"],
-                    default=["Carbon Score", "Economic Score", "Water Score", "Social Score"]
+                    default=["Carbon Score", "Economic Score", "Water Score", "Social Score"],
                     help = "Carbon Weighting"+cweight+"Water Weighting"+wweight+"Economic Weighting"+eweight+"Social Weighting"+sweight
                 )
                 
