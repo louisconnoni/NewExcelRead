@@ -19,8 +19,8 @@ uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
 
-    st.subheader("Input Data Preview")
-    st.dataframe(df.head())
+    #st.subheader("Input Data Preview")
+    #st.dataframe(df.head())
 
     # =========================
     # Run Model Button
@@ -42,7 +42,7 @@ if uploaded_file:
 
         results_df = pd.DataFrame(results_list)
 
-        # 🔥 STORE RESULTS
+        # STORE RESULTS
         st.session_state["results_df"] = results_df
 
     # =========================
@@ -64,6 +64,7 @@ if uploaded_file:
             chart_type = st.radio(
                 "Select Visualization Type",
                 ["Standard Bar Chart", "Stacked Sustainability Chart"]
+                help = "Switch between standard or stacked bar charts"
             )
 
             # =========================
