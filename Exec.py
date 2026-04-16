@@ -442,7 +442,11 @@ def run_model_for_column(op):
       "Social Score": socialscore,
       "ERE improvement": EREpercent*-1,
       "ERF" : ERF,
-      "Error": errors[0]
+      "Error": errors[0],
+      "Economic Weight":, Se
+      "Water Weight":Sw,
+      "Carbon Weight":Sc,
+      "Social Weight":Ssocial
     
       
         
