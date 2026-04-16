@@ -158,10 +158,11 @@ if uploaded_file:
                     ax.set_xlabel("Scenario")
                     ax.legend()
                     plt.xticks(rotation=45)
+                    help = "hello"
 
                     st.pyplot(fig)
                     #help = "Carbon Weighting"+cweight+"Water Weighting"+wweight+"Economic Weighting"+eweight+"Social Weighting"+sweight
-                    help = "hello"
+                    
 
     else:
         st.info("Click 'Run Model for All Scenarios' to generate results.")
