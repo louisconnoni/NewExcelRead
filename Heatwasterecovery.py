@@ -130,10 +130,10 @@ if uploaded_file:
                     water = results_df["Water Score"]
                     social = results_df["Social Score"]
                     ploterror = results_df["Error"]
-                    carbonw =carbon*0.25
-                    econw = econ*0.25
-                    waterw = water*0.25
-                    socialw = social*0.25
+                    carbonw =carbon*results_df["Carbon Weight"]
+                    econw = econ*results_df["Economic Weight"]
+                    waterw = water*results_df["Water Weight"]
+                    socialw = social*results_df["Social Weight"]
                     
 
                     # Stacked bars
