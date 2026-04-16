@@ -159,7 +159,7 @@ if uploaded_file:
                     ax.set_xlabel("Scenario")
                     ax.legend()
                     plt.xticks(rotation=45)
-                    help = "hello"
+                    st.help("This chart shows stacked sustainability scores with uncertainty.")
 
                     st.pyplot(fig)
                     
