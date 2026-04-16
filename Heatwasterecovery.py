@@ -64,7 +64,7 @@ if uploaded_file:
             chart_type = st.radio(
                 "Select Visualization Type",
                 ["Standard Bar Chart", "Stacked Sustainability Chart"],
-                help = "Switch between standard or stacked bar charts"
+                help = "Stacked Bar Graph Weighting: 25% Water, 25% Social, 25% Economic, 25% Carbon"
             )
 
             # =========================
