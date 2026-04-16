@@ -77,7 +77,7 @@ if uploaded_file:
                     "Select metrics to display",
                     [col for col in results_df.columns if col != "Scenario"],
                     default=["Carbon Score", "Economic Score", "Water Score", "Social Score"],
-                    help = "Carbon Weighting"+5
+                    help = "Carbon Weighting"+"Cheese"
                 )
                 
                 if metrics:
