@@ -63,7 +63,7 @@ if uploaded_file:
             # =========================
             chart_type = st.radio(
                 "Select Visualization Type",
-                ["Standard Bar Chart", "Stacked Sustainability Chart"]
+                ["Standard Bar Chart", "Stacked Sustainability Chart"],
                 help = "Switch between standard or stacked bar charts"
             )
 
