@@ -77,6 +77,7 @@ if uploaded_file:
                     "Select metrics to display",
                     [col for col in results_df.columns if col != "Scenario"],
                     default=["Carbon Score", "Economic Score", "Water Score", "Social Score"]
+                    help = "Carbon Weighting"+cweight+"Water Weighting"+wweight+"Economic Weighting"+eweight+"Social Weighting"+sweight
                 )
                 
                 if metrics:
@@ -161,7 +162,7 @@ if uploaded_file:
                     help = "hello"
 
                     st.pyplot(fig)
-                    #help = "Carbon Weighting"+cweight+"Water Weighting"+wweight+"Economic Weighting"+eweight+"Social Weighting"+sweight
+                    
                     
 
     else:
