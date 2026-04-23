@@ -168,6 +168,8 @@ if uploaded_file:
                     econw = econ*eweight
                     waterw = water*wweight
                     socialw = social*sweight
+
+                    st.sidebar.subheader("Adjust Sustainability Weights")
                     
 
                     # Stacked bars
