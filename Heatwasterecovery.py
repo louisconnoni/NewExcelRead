@@ -46,7 +46,7 @@ if uploaded_file:
                 model_function = run_model_for_column
                 model_label = "CCS"
 
-            elif sheet_name.lower() == "Desalination":
+            elif sheet_name.lower() == "desalination":
                 model_function = run_desalination_model
                 model_label = "Desalination"
 
