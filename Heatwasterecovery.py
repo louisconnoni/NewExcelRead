@@ -11,7 +11,7 @@ from Exec import run_model_for_column          # CCS
 from Desalination import run_desalination_model # Desalination
 
 st.set_page_config(layout="wide")
-st.title("Multi-System Sustainability Model")
+st.title("Heat Waste Recovery Tool")
 
 # =========================
 # Upload File
@@ -28,7 +28,7 @@ if uploaded_file:
     # =========================
     # Run Model Button
     # =========================
-    if st.button("Run Model for All Sheets"):
+    if st.button("Run Model"):
 
         results_list = []
 
