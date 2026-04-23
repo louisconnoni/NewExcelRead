@@ -1,15 +1,17 @@
 
-import numpy as np
+
+# app.py
+
 import streamlit as st
 import pandas as pd
-from Exec import run_model_for_column
 import matplotlib.pyplot as plt
+import numpy as np
 
-
+from Exec import run_model_for_column          # CCS
+from Desalination import run_desalination_model # Desalination
 
 st.set_page_config(layout="wide")
-
-st.title("CCS Waste Heat Recovery Model")
+st.title("Multi-System Sustainability Model")
 
 # =========================
 # Upload File
@@ -17,36 +19,66 @@ st.title("CCS Waste Heat Recovery Model")
 uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
 
 if uploaded_file:
-    df = pd.read_excel(uploaded_file)
 
-    #st.subheader("Input Data Preview")
-    #st.dataframe(df.head())
+    excel_file = pd.ExcelFile(uploaded_file)
+
+    st.subheader("Detected Sheets")
+    st.write(excel_file.sheet_names)
 
     # =========================
     # Run Model Button
     # =========================
-    if st.button("Run Model for All Scenarios"):
+    if st.button("Run Model for All Sheets"):
 
         results_list = []
 
-        for col in df.columns[1:]:  # skip first column (labels)
-            op = df[col]
+        # Loop through sheets
+        for sheet_name in excel_file.sheet_names:
 
-            try:
-                result = run_model_for_column(op)
-                result["Scenario"] = col
-                results_list.append(result)
+            df = pd.read_excel(excel_file, sheet_name=sheet_name)
 
-            except Exception as e:
-                st.warning(f"Error in column {col}: {e}")
+            st.write(f"Processing sheet: {sheet_name}")
+
+            # -------------------------
+            # SELECT MODEL BASED ON NAME
+            # -------------------------
+            if sheet_name.lower() == "CCS":
+                model_function = run_model_for_column
+                model_label = "CCS"
+
+            elif sheet_name.lower() == "Desalination":
+                model_function = run_desalination_model
+                model_label = "Desalination"
+
+            else:
+                st.warning(f"Skipping unknown sheet: {sheet_name}")
+                continue
+
+            # -------------------------
+            # LOOP THROUGH SCENARIOS
+            # -------------------------
+            for col in df.columns[1:]:
+
+                op = df[col]
+
+                try:
+                    result = model_function(op)
+
+                    result["Scenario"] = f"{model_label} - {col}"
+                    result["System"] = model_label
+
+                    results_list.append(result)
+
+                except Exception as e:
+                    st.warning(f"Error in {sheet_name} / {col}: {e}")
 
         results_df = pd.DataFrame(results_list)
 
-        # STORE RESULTS
+        # Save results
         st.session_state["results_df"] = results_df
 
     # =========================
-    # DISPLAY RESULTS (PERSISTENT)
+    # DISPLAY RESULTS
     # =========================
     if "results_df" in st.session_state:
 
@@ -59,35 +91,31 @@ if uploaded_file:
             st.dataframe(results_df)
 
             # =========================
-            # CHART TOGGLE
+            # CHART TYPE TOGGLE
             # =========================
             chart_type = st.radio(
                 "Select Visualization Type",
-                ["Standard Bar Chart", "Stacked Sustainability Chart"],
-                help = "Stacked Bar Graph Weighting: 25% Water, 25% Social, 25% Economic, 25% Carbon"
+                ["Grouped Bar Chart", "Stacked Sustainability Chart"]
             )
 
             # =========================
-            # STANDARD BAR CHART
+            # GROUPED BAR CHART
             # =========================
-            if chart_type == "Standard Bar Chart":
+            if chart_type == "Grouped Bar Chart":
 
-                
                 metrics = st.multiselect(
-                    "Select metrics to display",
-                    [col for col in results_df.columns if col != "Scenario"],
-                    default=["Carbon Score", "Economic Score", "Water Score", "Social Score"],
-                    help = "Individual Scores From 0-1"
+                    "Select metrics",
+                    [col for col in results_df.columns if col not in ["Scenario", "System"]],
+                    default=["Carbon Score", "Economic Score", "Water Score", "Social Score"]
                 )
-                
+
                 if metrics:
                     fig, ax = plt.subplots()
-                
+
                     scenarios = results_df["Scenario"]
-                    x = np.arange(len(scenarios))  # positions for scenarios
-                
-                    width = 0.8 / len(metrics)  # auto-fit bars nicely
-                
+                    x = np.arange(len(scenarios))
+                    width = 0.8 / len(metrics)
+
                     for i, metric in enumerate(metrics):
                         ax.bar(
                             x + i * width,
@@ -95,15 +123,13 @@ if uploaded_file:
                             width=width,
                             label=metric
                         )
-                
-                    # Center x-axis labels
+
                     ax.set_xticks(x + width * (len(metrics) - 1) / 2)
                     ax.set_xticklabels(scenarios, rotation=45)
-                
+
                     ax.set_ylabel("Value")
-                    ax.set_xlabel("Scenario")
                     ax.legend()
-                
+
                     st.pyplot(fig)
 
             # =========================
@@ -118,14 +144,12 @@ if uploaded_file:
                     "Social Score"
                 ]
 
-                # Check required columns exist
                 if not all(col in results_df.columns for col in required_cols):
-                    st.error("Missing required score columns for stacked plot.")
+                    st.error("Missing required columns for stacked chart.")
                 else:
                     fig, ax = plt.subplots()
 
                     scenarios = results_df["Scenario"]
-
                     carbon = results_df["Carbon Score"]
                     econ = results_df["Economic Score"]
                     water = results_df["Water Score"]
@@ -152,18 +176,14 @@ if uploaded_file:
                     # Total for error bar
                     totals = carbon + econ + water + social
 
-                    # Error bars (if available)
+
                     
 
                     ax.set_ylabel("Total Score")
-                    ax.set_xlabel("Scenario")
                     ax.legend()
                     plt.xticks(rotation=45)
-                    #st.help("This chart shows stacked sustainability scores with uncertainty.")
 
                     st.pyplot(fig)
-                    
-                    
 
     else:
-        st.info("Click 'Run Model for All Scenarios' to generate results.")
+        st.info("Click 'Run Model for All Sheets' to generate results.")
