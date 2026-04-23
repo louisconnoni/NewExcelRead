@@ -164,12 +164,20 @@ if uploaded_file:
                     modelerror = results_df["Error"]
 
                     
+                    
+
+                    st.sidebar.subheader("Adjust Sustainability Weights")
+                    
+
+                    wweight = st.sidebar.slider("Water Weight", 0.0, 1.0, wweight, 0.01)
+                    sweight = st.sidebar.slider("Social Weight", 0.0, 1.0, sweight, 0.01)
+                    eweight = st.sidebar.slider("Economic Weight", 0.0, 1.0, eweight, 0.01)
+                    cweight = st.sidebar.slider("Carbon Weight", 0.0, 1.0, cweight, 0.01)
+
                     carbonw =carbon*cweight
                     econw = econ*eweight
                     waterw = water*wweight
                     socialw = social*sweight
-
-                    st.sidebar.subheader("Adjust Sustainability Weights")
                     
 
                     # Stacked bars
