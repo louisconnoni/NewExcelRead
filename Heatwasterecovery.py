@@ -22,8 +22,8 @@ if uploaded_file:
 
     excel_file = pd.ExcelFile(uploaded_file)
 
-    st.subheader("Detected Sheets")
-    st.write(excel_file.sheet_names)
+    ##st.subheader("Detected Sheets")
+    ##st.write(excel_file.sheet_names)
 
     # =========================
     # Run Model Button
