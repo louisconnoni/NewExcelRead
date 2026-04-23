@@ -174,10 +174,10 @@ if uploaded_file:
                     st.sidebar.subheader("Adjust Sustainability Weights")
                     
 
-                    wweight = st.sidebar.slider("Water Weight", 0.0, 1.0, wweight2, 0.01)
-                    sweight = st.sidebar.slider("Social Weight", 0.0, 1.0, sweight2, 0.01)
-                    eweight = st.sidebar.slider("Economic Weight", 0.0, 1.0, wweight2, 0.01)
-                    cweight = st.sidebar.slider("Carbon Weight", 0.0, 1.0, cweight2, 0.01)
+                    wweight = st.sidebar.slider("Water Weight", 0.0, 1.0, .25, 0.01)
+                    sweight = st.sidebar.slider("Social Weight", 0.0, 1.0, .25, 0.01)
+                    eweight = st.sidebar.slider("Economic Weight", 0.0, 1.0, .25, 0.01)
+                    cweight = st.sidebar.slider("Carbon Weight", 0.0, 1.0, .25, 0.01)
 
                     carbonw =carbon*cweight
                     econw = econ*eweight
