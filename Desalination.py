@@ -13,7 +13,7 @@ import math
 import numpy_financial as nf
 
 
-def run_model_for_column(op):
+def run_desalination_model(op):
 
  #-
  ## Razas portions
