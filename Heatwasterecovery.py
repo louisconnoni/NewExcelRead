@@ -161,6 +161,7 @@ if uploaded_file:
                     eweight = results_df["Economic Weight"]
                     wweight = results_df["Water Weight"]
                     sweight = results_df["Social Weight"]
+                    modelerror = results_df["Error"]
 
                     
                     carbonw =carbon*cweight
@@ -173,7 +174,7 @@ if uploaded_file:
                     ax.bar(scenarios, carbonw, label="Carbon")
                     ax.bar(scenarios, econw, bottom=carbonw, label="Economic")
                     ax.bar(scenarios, waterw, bottom=carbonw + econw, label="Water")
-                    ax.bar(scenarios, socialw, bottom=carbonw + econw + waterw, label="Social", yerr = .1)
+                    ax.bar(scenarios, socialw, bottom=carbonw + econw + waterw, label="Social", yerr = modelerror)
 
                     # Total for error bar
                     totals = carbon + econ + water + social
