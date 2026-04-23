@@ -61,8 +61,9 @@ def run_model_for_column(op):
      soiltemp = op[61] #18 temperature of soil surrounding piping
      L_c = op[62] #2000 characteristic distance
      whtnet = wht - mdot*C_p*(TOFFout - (soiltemp+(TOFFout-soiltemp)*np.exp(-distance/L_c))) #accounting for heat lost to ground during transmission
- 
-     
+     if(whtnet < 0):
+         print("Error: negative waste heat was found. Adjust your inputs")
+         break
      
      # Offtaker
      sre = op[35]#2e9  # Specific regeneration energy, joules per ton CO2 (energy required to regenerate solvent)
@@ -488,11 +489,6 @@ def run_model_for_column(op):
      values = [totalscore, carbonscore, econscore, waterscore, socialscore]
      # Define symmetric error values for each bar
      errors = [abs(np.linalg.norm(uncertainties)), 0, 0, 0, 0]
-
-
-
-     
-
  
      return {
       "Total Profit": totalprofit,
