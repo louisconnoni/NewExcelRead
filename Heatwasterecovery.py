@@ -42,7 +42,7 @@ if uploaded_file:
             # -------------------------
             # SELECT MODEL BASED ON NAME
             # -------------------------
-            if sheet_name.lower() == "CCS":
+            if sheet_name.lower() == "ccs":
                 model_function = run_model_for_column
                 model_label = "CCS"
 
