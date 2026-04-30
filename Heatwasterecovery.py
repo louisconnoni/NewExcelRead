@@ -126,10 +126,10 @@ if uploaded_file:
                 social = results_df["Social Score"]
                 
                 # Uncertainties
-                carbon_err = results_df["Carbon Uncertainty"]
-                econ_err   = results_df["Economic Uncertainty"]
-                water_err  = results_df["Water Uncertainty"]
-                social_err = results_df["Social Uncertainty"]
+                carbon_err = results_df["CarbonError"]
+                econ_err   = results_df["EconomicError"]
+                water_err  = results_df["WaterError"]
+                social_err = results_df["SocialError"]
                 
                 # Bars + error bars
                 ax.bar(x - 1.5*width, carbon, width, yerr=carbon_err, capsize=4, label="Carbon")
