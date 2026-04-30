@@ -52,7 +52,7 @@ if uploaded_file:
                 model_label = "Desalination"
                 
             elif sheet_name.lower() == "district heating":
-                model_function = run_dristricheating_model
+                model_function = run_districtheating_model
                 model_label = "District Heating"
 
             else:
