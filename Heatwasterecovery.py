@@ -228,11 +228,11 @@ if uploaded_file:
             
             cost_labels = ["Pipe Cost", "Pump Cost", "Heat Exchanger", "Maintenance", "Electricity"]
             cost_values = [
-                row["Labor Cost"],
-                row["Electricity Cost"],
-                row["Operations Cost"],
-                row["Capital Cost"],
-                row[""]
+                row["Pipe Cost"],
+                row["Pump Cost"],
+                row["Heat Exchanger Cost"],
+                row["Maintenance per annum"],
+                row["Electricity per annum"]
             ]
             
             fig, ax = plt.subplots()
