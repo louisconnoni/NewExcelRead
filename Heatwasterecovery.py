@@ -217,5 +217,40 @@ if uploaded_file:
 
                     st.pyplot(fig)
 
+            #Pie Chart
+
+            selected_scenario = st.selectbox(
+                "Select Scenario for Cost Breakdown",
+                results_df["Scenario"]
+            )
+            
+            row = results_df[results_df["Scenario"] == selected_scenario].iloc[0]
+            
+            cost_labels = ["Labor", "Electricity", "Operations", "Capital"]
+            cost_values = [
+                row["Labor Cost"],
+                row["Electricity Cost"],
+                row["Operations Cost"],
+                row["Capital Cost"]
+            ]
+            
+            fig, ax = plt.subplots()
+            
+            ax.pie(
+                cost_values,
+                labels=cost_labels,
+                autopct='%1.1f%%',
+                startangle=90,
+                wedgeprops=dict(width=0.4)
+            )
+            
+            total_cost = sum(cost_values)
+            
+            ax.text(0, 0, f"${total_cost:,.0f}", ha='center', va='center')
+            
+            ax.set_title(f"Cost Breakdown: {selected_scenario}")
+            
+            st.pyplot(fig)
+
     else:
         st.info("Click 'Run Model for All Sheets' to generate results.")
