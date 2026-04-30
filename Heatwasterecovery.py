@@ -226,12 +226,13 @@ if uploaded_file:
             
             row = results_df[results_df["Scenario"] == selected_scenario].iloc[0]
             
-            cost_labels = ["Labor", "Electricity", "Operations", "Capital"]
+            cost_labels = ["Pipe Cost", "Pump Cost", "Heat Exchanger", "Maintenance", "Electricity"]
             cost_values = [
                 row["Labor Cost"],
                 row["Electricity Cost"],
                 row["Operations Cost"],
-                row["Capital Cost"]
+                row["Capital Cost"],
+                row[""]
             ]
             
             fig, ax = plt.subplots()
