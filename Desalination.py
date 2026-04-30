@@ -532,6 +532,11 @@ def run_desalination_model(op):
   "Water Weight":Sw,
   "Carbon Weight":Sc,
   "Social Weight":Ssocial
+  "Pipe Cost":pipeweight*pipppw,
+  "Pump Cost":100*60*(pumppower/373)**0.8,
+  "Heat Exchanger Cost":3200*(wht/100000)**0.6,
+  "Maintenance per annum":maintenancecost * (wht/1000000),
+  "Electricity per annum":electricity
     
       
         
