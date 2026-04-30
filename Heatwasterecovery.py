@@ -110,35 +110,44 @@ if uploaded_file:
             # =========================
             if chart_type == "Grouped Bar Chart":
 
-                metrics = st.multiselect(
-                    "Select metrics",
-                    [col for col in results_df.columns if col not in ["Scenario", "System"]],
-                    default=["Carbon Score", "Economic Score", "Water Score", "Social Score"]
-                )
+                
 
-                if metrics:
-                    fig, ax = plt.subplots()
+                fig, ax = plt.subplots()
+                
+                scenarios = results_df["Scenario"]
+                x = np.arange(len(scenarios))
+                
+                width = 0.2
+                
+                # Data
+                carbon = results_df["Carbon Score"]
+                econ   = results_df["Economic Score"]
+                water  = results_df["Water Score"]
+                social = results_df["Social Score"]
+                
+                # Uncertainties
+                carbon_err = results_df["Carbon Uncertainty"]
+                econ_err   = results_df["Economic Uncertainty"]
+                water_err  = results_df["Water Uncertainty"]
+                social_err = results_df["Social Uncertainty"]
+                
+                # Bars + error bars
+                ax.bar(x - 1.5*width, carbon, width, yerr=carbon_err, capsize=4, label="Carbon")
+                ax.bar(x - 0.5*width, econ,   width, yerr=econ_err,   capsize=4, label="Economic")
+                ax.bar(x + 0.5*width, water,  width, yerr=water_err,  capsize=4, label="Water")
+                ax.bar(x + 1.5*width, social, width, yerr=social_err, capsize=4, label="Social")
+                
+                # Axis formatting
+                ax.set_xticks(x)
+                ax.set_xticklabels(scenarios, rotation=45)
+                
+                ax.set_ylabel("Score")
+                ax.set_xlabel("Scenario")
+                ax.legend()
+                
+                st.pyplot(fig)
 
-                    scenarios = results_df["Scenario"]
-                    x = np.arange(len(scenarios))
-                    width = 0.8 / len(metrics)
-
-                    for i, metric in enumerate(metrics):
-                        ax.bar(
-                            x + i * width,
-                            results_df[metric],
-                            width=width,
-                            label=metric
-                        )
-
-                    ax.set_xticks(x + width * (len(metrics) - 1) / 2)
-                    ax.set_xticklabels(scenarios, rotation=45)
-
-                    ax.set_ylabel("Value")
-                    ax.legend()
-
-                    st.pyplot(fig)
-
+                
             # =========================
             # STACKED BAR CHART
             # =========================
