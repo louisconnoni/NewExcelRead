@@ -226,7 +226,7 @@ if uploaded_file:
             
             row = results_df[results_df["Scenario"] == selected_scenario].iloc[0]
             
-            cost_labels = ["Pipe Cost", "Pump Cost", "Heat Exchanger", "Maintenance", "Electricity"]
+            cost_labels = ["Pipe Cost", "Pump Cost", "Heat Exchanger Cost", "Maintenance", "Electricity"]
             cost_values = [
                 row["Pipe Cost"],
                 row["Pump Cost"],
@@ -249,7 +249,7 @@ if uploaded_file:
             
             ax.text(0, 0, f"${total_cost:,.0f}", ha='center', va='center')
             
-            ax.set_title(f"Cost Breakdown: {selected_scenario}")
+            ax.set_title(f"Annual Cost Breakdown: {selected_scenario}")
             
             st.pyplot(fig)
 
