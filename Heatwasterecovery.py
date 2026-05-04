@@ -249,7 +249,7 @@ if uploaded_file:
             
             ax.text(0, 0, f"${total_cost:,.0f}", ha='center', va='center')
             
-            ax.set_title(f"Annual Cost Breakdown: {selected_scenario}")
+            ax.set_title(f"First Year Cost Breakdown: {selected_scenario}")
             
             st.pyplot(fig)
 
