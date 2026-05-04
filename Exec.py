@@ -60,6 +60,7 @@ def run_model_for_column(op):
  L_c = op[62] #2000 characteristic distance
  whtnet = wht - mdot*C_p*(TOFFout - (soiltemp+(TOFFout-soiltemp)*np.exp(-distance/L_c))) #accounting for heat lost to ground during transmission
  
+ 
  # Offtaker
  sre = op[35]#2e9  # Specific regeneration energy, joules per ton CO2 (energy required to regenerate solvent)
  operatingpercent = op[36]#1#0.5  # percent of the time that the CCS plant is operating
@@ -72,7 +73,7 @@ def run_model_for_column(op):
  electricity = pumppower*24*365*electricityprice #pump electricity cost
  electricenergy = pumppower*24*365 #pump electricity energy
  operation = op[42]#50000#taxes, permits, insurance
- maintenancecost = labor+electricity+operation  # will need to break this down and do a more refined calculation later
+ maintenancecost = labor+operation  # will need to break this down and do a more refined calculation later
  # will be a function of distance, pump electricity, labor
  # yearly cost per MW thermal
  wateruse = op[43]#5 * (1 / 1.102)  # how much water the CCS uses per year - will need to break down further; m^3 per ton CO2 (originally metric ton)
@@ -148,6 +149,14 @@ def run_model_for_column(op):
  variables = np.array([Q, HRE, TDCin, TDCout, TOFFin, TOFFout, LMTDcor, U, HXatov, HXdensity, HXppw, HXcpw, HXwpw, thickness, Rinner, pipedensity, pipppw, pipcpw, pipwpw, distance, C_p, rho, mu, pumpeff, sre, operatingpercent, fuelemission, fuelefficiency, fuelprice, electricityprice, labor, operation, wateruse, Se, Sc, Sw, Ssocial, S1sub, S2sub, S3sub, S3water, S3food, S3heat, S4sub, jobs, jobsbaseline, social2, social3water, social3food, social3DH, waterscarcity, foodscarcity, heatdemand, heatprice, lostoperationtime, ITenergy, Totalenergy, social4, CTB, carbonsales, shippingemission, techtime, acceptancetime, transport_price, transport_carbon, transport_water, soiltemp, L_c, ewif])
  sensitivities = np.zeros(len(variables))
  uncertainties = np.zeros(len(variables))
+ sensitivitieswater = np.zeros(len(variables))
+ uncertaintieswater = np.zeros(len(variables))
+ sensitivitiescarbon = np.zeros(len(variables))
+ uncertaintiescarbon = np.zeros(len(variables))
+ sensitivitiesecon = np.zeros(len(variables))
+ uncertaintiesecon = np.zeros(len(variables))
+ sensitivitiessocial = np.zeros(len(variables))
+ uncertaintiessocial = np.zeros(len(variables))
  
  # CALCULATIONS
  # preliminary
@@ -213,7 +222,7 @@ def run_model_for_column(op):
  #additional increases for machining, installation, transport
  #annual savings
  #need to add function of distance
- annualcosts = maintenancecost * (wht/1000000) #assuming flat rate based on capacity - actually more complicated
+ annualcosts = maintenancecost * (wht/1000000) + electricity#assuming flat rate based on capacity - actually more complicated
  #assuming 100k per MW thermal
  annualprofit = fuelprice * whtnet*24*365 * operatingpercent/fuelefficiency + CTB * carbonremoved#how much the heat is being sold for
  moneysaved = annualprofit-annualcosts
@@ -235,13 +244,13 @@ def run_model_for_column(op):
  
  #principal
  #HX + pipe + transport + pump
- waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
+ waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38 + 2*distance*np.pi*(Rinner)**2#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
  waterprincipal = 1.15 * waterprincipal #installation
  waterprincipal = 1.1 * waterprincipal #engineering
  waterprincipal = 1.1 * waterprincipal #contingency
  #additional increases for machining, installation, transport
  #annualsavings
- annualwaterusage =  wateruse * carbonremoved + electricenergy*ewif#offtaker side
+ annualwaterusage =  wateruse * carbonremoved + electricenergy*ewif*operatingpercent#offtaker side
  annualwaterproduction = 0 #CCS does not produce water
  annualwateravoidance = ewif*whtnet * 24 * 365 * operatingpercent/fuelefficiency #1000 #Scope 2 - will have to calculate based on how much water fossil fuels use - subtract scope 2 electricity used for pumps
  watersaved = annualwaterproduction + annualwateravoidance - annualwaterusage
@@ -264,7 +273,12 @@ def run_model_for_column(op):
  EREchange = EREnew - ERE
  EREpercent = EREchange*100/ERE
  
+ waterscore1 = waterscore
+ carbonscore1 = carbonscore
+ econscore1 = econscore
+ socialscore1 = socialscore
  
+
  
  #sensitivity and uncertainty 
  counter = 0
@@ -424,7 +438,7 @@ def run_model_for_column(op):
      #additional increases for machining, installation, transport
      #annual savings
      #need to add function of distance
-     annualcosts = maintenancecost * (wht/1000000) #assuming flat rate based on capacity - actually more complicated
+     annualcosts = maintenancecost * (wht/1000000) + electricity#assuming flat rate based on capacity - actually more complicated
      #assuming 100k per MW thermal
      annualprofit = fuelprice * whtnet*24*365 * operatingpercent/fuelefficiency + CTB * carbonremoved#how much the heat is being sold for
      moneysaved = annualprofit-annualcosts
@@ -445,13 +459,13 @@ def run_model_for_column(op):
      #water
  
      #principal
-     waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
+     waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38 + 2*distance*np.pi*(Rinner)**2#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
      waterprincipal = 1.15 * waterprincipal #installation
      waterprincipal = 1.1 * waterprincipal #engineering
      waterprincipal = 1.1 * waterprincipal #contingency
      #additional increases for machining, installation, transport
      #annualsavings
-     annualwaterusage =  wateruse * carbonremoved + electricenergy*ewif#offtaker side
+     annualwaterusage =  wateruse * carbonremoved + electricenergy*ewif*operatingpercent#offtaker side
      annualwaterproduction = 0 #CCS does not produce water
      annualwateravoidance = ewif * whtnet * 24 * 365 * operatingpercent/fuelefficiency #1000 #Scope 2 - will have to calculate based on how much water fossil fuels use - subtract scope 2 electricity used for pumps
      watersaved = annualwaterproduction + annualwateravoidance - annualwaterusage
@@ -475,13 +489,22 @@ def run_model_for_column(op):
      EREpercent = EREchange*100/ERE
      sensitivities[counter] = (totalscore2-totalscore)/(0.01*(variables[counter]/1.01))
      uncertainties[counter] = abs(sensitivities[counter] * 0.1 * variables[counter]/1.01)
+     sensitivitieswater[counter] = (waterscore-waterscore1)/(0.01*(variables[counter]/1.01))
+     uncertaintieswater[counter] = abs(sensitivitieswater[counter] * 0.1 * variables[counter]/1.01)
+     sensitivitiescarbon[counter] = (carbonscore-carbonscore1)/(0.01*(variables[counter]/1.01))
+     uncertaintiescarbon[counter] = abs(sensitivitiescarbon[counter] * 0.1 * variables[counter]/1.01)
+     sensitivitiesecon[counter] = (econscore-econscore1)/(0.01*(variables[counter]/1.01))
+     uncertaintiesecon[counter] = abs(sensitivitiesecon[counter] * 0.1 * variables[counter]/1.01)
+     sensitivitiessocial[counter] = (socialscore-socialscore1)/(0.01*(variables[counter]/1.01))
+     uncertaintiessocial[counter] = abs(sensitivitiessocial[counter] * 0.1 * variables[counter]/1.01)
+     
      counter = counter + 1
 
  
  categories = ['Total Score', 'Carbon Score', 'Economic Score', 'Water Score', 'Social Score']
  values = [totalscore, carbonscore, econscore, waterscore, socialscore]
  # Define symmetric error values for each bar
- errors = [abs(np.linalg.norm(uncertainties)), 0, 0, 0, 0]
+ errors = [abs(np.linalg.norm(uncertainties)), abs(np.linalg.norm(uncertaintiescarbon)), abs(np.linalg.norm(uncertaintiesecon)), abs(np.linalg.norm(uncertaintieswater)), abs(np.linalg.norm(uncertaintiessocial))]
 
 
  return {
