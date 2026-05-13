@@ -207,6 +207,14 @@ if uploaded_file:
 
             #Display Economic Impact
 
+            
+            
+                
+           
+
+
+
+
             selected_scenario = st.selectbox(
                 "Select Scenario for Cost Breakdown",
                 results_df["Scenario"]
@@ -214,7 +222,13 @@ if uploaded_file:
             
             row = results_df[results_df["Scenario"] == selected_scenario].iloc[0]
             
-            cost_labels = ["Pipe Cost", "Pump Cost", "Heat Exchanger Cost", "Maintenance", "Electricity"]
+            cost_labels = [
+                "Labor",
+                "Electricity",
+                "Operations",
+                "Capital"
+            ]
+            
             cost_values = [
                 row["Pipe Cost"],
                 row["Pump Cost"],
@@ -225,19 +239,20 @@ if uploaded_file:
             
             fig, ax = plt.subplots()
             
-            ax.pie(
-                cost_values,
-                labels=cost_labels,
-                autopct='%1.1f%%',
-                startangle=90,
-                wedgeprops=dict(width=0.4)
-            )
+            bars = ax.barh(cost_labels, cost_values)
             
-            total_cost = sum(cost_values)
+            for bar in bars:
+                width = bar.get_width()
             
-            ax.text(0, 0, f"${total_cost:,.0f}", ha='center', va='center')
+                ax.text(
+                    width,
+                    bar.get_y() + bar.get_height()/2,
+                    f"${width:,.0f}",
+                    va='center'
+                )
             
-            ax.set_title(f"First Year Cost Breakdown: {selected_scenario}")
+            ax.set_xlabel("Cost ($)")
+            ax.set_title(f"Economic Cost Breakdown: {selected_scenario}")
             
             st.pyplot(fig)
 
