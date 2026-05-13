@@ -60,7 +60,12 @@ def run_desalination_model(op):
  soiltemp = op[61] #18 temperature of soil surrounding piping
  L_c = op[62] #2000 characteristic distance
  whtnet = wht - mdot*C_p*(TOFFout - (soiltemp+(TOFFout-soiltemp)*np.exp(-distance/L_c))) #accounting for heat lost to ground during transmission
+
+ if distance > 5000:
+     raise ValueError("Distance exceeds maximum allowable value of 5000.")
  
+ if whtnet < 0:
+     raise ValueError("Heat waste recovery cannot be negative.")
  
  # Offtaker
  Vw = op[35]#sre = op[35]#2e9  # Specific regeneration energy, joules per ton CO2 (energy required to regenerate solvent)
