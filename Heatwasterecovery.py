@@ -176,10 +176,42 @@ if uploaded_file:
                     st.sidebar.subheader("Adjust Sustainability Weights")
                     
 
-                    wweight = st.sidebar.slider("Water Weight", 0.0, 1.0, .25, 0.01)
-                    sweight = st.sidebar.slider("Social Weight", 0.0, 1.0, .25, 0.01)
-                    eweight = st.sidebar.slider("Economic Weight", 0.0, 1.0, .25, 0.01)
-                    cweight = st.sidebar.slider("Carbon Weight", 0.0, 1.0, .25, 0.01)
+                    #wweight = st.sidebar.slider("Water Weight", 0.0, 1.0, .25, 0.01)
+                    #sweight = st.sidebar.slider("Social Weight", 0.0, 1.0, .25, 0.01)
+                    #eweight = st.sidebar.slider("Economic Weight", 0.0, 1.0, .25, 0.01)
+                    #cweight = st.sidebar.slider("Carbon Weight", 0.0, 1.0, .25, 0.01)
+
+                    wweight = st.sidebar.number_input(
+                        "Water Weighting",
+                        min_value=0.0,
+                        max_value=1.0,
+                        value=0.25,
+                        step=0.01
+                    )
+                    
+                    sweight = st.sidebar.number_input(
+                        "Social Weighting",
+                        min_value=0.0,
+                        max_value=1.0,
+                        value=0.25,
+                        step=0.01
+                    )
+                    
+                    eweight = st.sidebar.number_input(
+                        "Economic Weighting",
+                        min_value=0.0,
+                        max_value=1.0,
+                        value=0.25,
+                        step=0.01
+                    )
+                    
+                    cweight = st.sidebar.number_input(
+                        "Carbon Weighting",
+                        min_value=0.0,
+                        max_value=1.0,
+                        value=0.25,
+                        step=0.01
+                    )
 
                     carbonw =carbon*cweight
                     econw = econ*eweight
