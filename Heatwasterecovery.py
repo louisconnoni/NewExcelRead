@@ -1,6 +1,6 @@
 
 
-# app.py
+
 
 import streamlit as st
 import pandas as pd
@@ -14,9 +14,9 @@ from DistrictHeating import run_districtheating_model
 st.set_page_config(layout="wide")
 st.title("Heat Waste Recovery Tool")
 
-# =========================
-# Upload File
-# =========================
+
+# Uploading File
+
 uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
 
 if uploaded_file:
@@ -40,9 +40,7 @@ if uploaded_file:
 
             st.write(f"Processing sheet: {sheet_name}")
 
-            # -------------------------
-            # SELECT MODEL BASED ON NAME
-            # -------------------------
+            
             if sheet_name.lower() == "ccs":
                 model_function = run_model_for_column
                 model_label = "CCS"
@@ -59,9 +57,7 @@ if uploaded_file:
                 st.warning(f"Skipping unknown sheet: {sheet_name}")
                 continue
 
-            # -------------------------
-            # LOOP THROUGH SCENARIOS
-            # -------------------------
+            # Scenario Loop
             for col in df.columns[1:]:
 
                 op = df[col]
@@ -82,9 +78,7 @@ if uploaded_file:
         # Save results
         st.session_state["results_df"] = results_df
 
-    # =========================
-    # DISPLAY RESULTS
-    # =========================
+    # Graphs and Results
     if "results_df" in st.session_state:
 
         results_df = st.session_state["results_df"]
@@ -95,9 +89,7 @@ if uploaded_file:
             st.subheader("Results Table")
             st.dataframe(results_df)
 
-            # =========================
-            # CHART TYPE TOGGLE
-            # =========================
+            
             chart_type = st.radio(
                 "Select Visualization Type",
                 ["Grouped Bar Chart", "Stacked Sustainability Chart"],
@@ -105,9 +97,7 @@ if uploaded_file:
                 
             )
 
-            # =========================
-            # GROUPED BAR CHART
-            # =========================
+            # Bar Charts
             if chart_type == "Grouped Bar Chart":
 
                 
@@ -148,9 +138,7 @@ if uploaded_file:
                 st.pyplot(fig)
 
                 
-            # =========================
-            # STACKED BAR CHART
-            # =========================
+            # Stacked Bar Chart
             elif chart_type == "Stacked Sustainability Chart":
 
                 required_cols = [
@@ -199,13 +187,13 @@ if uploaded_file:
                     socialw = social*sweight
                     
 
-                    # Stacked bars
+                    
                     ax.bar(scenarios, carbonw, label="Carbon")
                     ax.bar(scenarios, econw, bottom=carbonw, label="Economic")
                     ax.bar(scenarios, waterw, bottom=carbonw + econw, label="Water")
                     ax.bar(scenarios, socialw, bottom=carbonw + econw + waterw, label="Social", yerr = modelerror)
 
-                    # Total for error bar
+                   
                     totals = carbon + econ + water + social
 
 
@@ -217,7 +205,7 @@ if uploaded_file:
 
                     st.pyplot(fig)
 
-            #Pie Chart
+            #Display Economic Impact
 
             selected_scenario = st.selectbox(
                 "Select Scenario for Cost Breakdown",
