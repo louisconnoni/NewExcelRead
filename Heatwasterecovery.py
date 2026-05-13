@@ -223,10 +223,11 @@ if uploaded_file:
             row = results_df[results_df["Scenario"] == selected_scenario].iloc[0]
             
             cost_labels = [
-                "Labor",
-                "Electricity",
-                "Operations",
-                "Capital"
+                "Labor Cost",
+                "Pump Cost",
+                "Heat Exchanger Cost",
+                "Yearly Maintenance Cost",
+                "Yearly Electicity Cost"
             ]
             
             cost_values = [
