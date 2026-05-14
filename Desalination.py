@@ -6,7 +6,7 @@ import cmath as cmath
 import pandas as pd
 import numpy_financial as nf
 
-# model.py
+
 
 import numpy as np
 import math
