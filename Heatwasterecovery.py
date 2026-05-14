@@ -15,7 +15,7 @@ st.set_page_config(layout="wide")
 st.title("Heat Waste Recovery Tool")
 
 
-# Uploading File
+# Uploading Excel File
 
 uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
 
@@ -26,9 +26,8 @@ if uploaded_file:
     ##st.subheader("Detected Sheets")
     ##st.write(excel_file.sheet_names)
 
-    # =========================
-    # Run Model Button
-    # =========================
+   
+   
     if st.button("Run Model"):
 
         results_list = []
@@ -75,7 +74,7 @@ if uploaded_file:
 
         results_df = pd.DataFrame(results_list)
 
-        # Save results
+        # Saving results
         st.session_state["results_df"] = results_df
 
     # Graphs and Results
@@ -109,25 +108,25 @@ if uploaded_file:
                 
                 width = 0.2
                 
-                # Data
+                
                 carbon = results_df["Carbon Score"]
                 econ   = results_df["Economic Score"]
                 water  = results_df["Water Score"]
                 social = results_df["Social Score"]
                 
-                # Uncertainties
+                
                 carbon_err = results_df["CarbonError"]
                 econ_err   = results_df["EconomicError"]
                 water_err  = results_df["WaterError"]
                 social_err = results_df["SocialError"]
                 
-                # Bars + error bars
+                
                 ax.bar(x - 1.5*width, carbon, width, yerr=carbon_err, capsize=4, label="Carbon")
                 ax.bar(x - 0.5*width, econ,   width, yerr=econ_err,   capsize=4, label="Economic")
                 ax.bar(x + 0.5*width, water,  width, yerr=water_err,  capsize=4, label="Water")
                 ax.bar(x + 1.5*width, social, width, yerr=social_err, capsize=4, label="Social")
                 
-                # Axis formatting
+                
                 ax.set_xticks(x)
                 ax.set_xticklabels(scenarios, rotation=45)
                 
@@ -248,7 +247,7 @@ if uploaded_file:
 
 
             selected_scenario = st.selectbox(
-                "Select Scenario for Cost Breakdown",
+                "Select Offtaker for Cost Breakdown",
                 results_df["Scenario"]
             )
             
