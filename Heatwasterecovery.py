@@ -85,10 +85,86 @@ if uploaded_file:
         if results_df.empty:
             st.warning("No results to display.")
         else:
-            st.subheader("Results Table")
-            st.dataframe(results_df)
-
             
+
+            st.subheader("Scenario Results")
+
+            selected_scenario = st.selectbox(
+                "Select Scenario",
+                results_df["Scenario"]
+            )
+            
+            # Get selected row
+            row = results_df[
+                results_df["Scenario"] == selected_scenario
+            ].iloc[0]
+
+            st.markdown("## Savings & Profit")
+
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric(
+                    "Total Profit",
+                    f"${row['Total Profit']:,.0f}"
+                )
+            
+            with col2:
+                st.metric(
+                    "Total Carbon Saved",
+                    f"{row['Total Carbon Saved']:,.0f}"
+                )
+            
+            with col3:
+                st.metric(
+                    "Total Water Saved",
+                    f"{row['Total Water Saved']:.2f}"
+                )
+
+            st.markdown("## Error Metrics")
+
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric(
+                    "ERE Improvement",
+                    f"{row['ERE improvement']:.3f}"
+                )
+            
+            with col2:
+                st.metric(
+                    "ERF",
+                    f"{row['ERF']:.1f}"
+                )
+            with col3:
+                st.metric(
+                    "Error",
+                    f"{row['Error']:.1f}"
+                )
+
+            st.markdown("## Scope 2 Savings")
+
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.metric(
+                    "Scope 2 CO₂ Saved",
+                    f"{row['Tons Carbon']:,.1f} tCO₂"
+                )
+            
+            with col2:
+                st.metric(
+                    "Scope 2 Water Saved",
+                    f"{row['Cubic Meters Water']:.2f} m³"
+                )
+
+            with st.expander("Show Full Results Table"):
+
+                st.dataframe(results_df)
+
+
+
+            #endofedit
             chart_type = st.radio(
                 "Select Visualization Type",
                 ["Grouped Bar Chart", "Stacked Sustainability Chart"],
