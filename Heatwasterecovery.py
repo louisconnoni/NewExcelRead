@@ -121,7 +121,7 @@ if uploaded_file:
                     f"{row['Total Water Saved']:.2f} m³ "
                 )
 
-            st.markdown("## Error Metrics")
+            st.markdown("## Energy Reuse Metrics")
 
             col1, col2, col3 = st.columns(3)
             
