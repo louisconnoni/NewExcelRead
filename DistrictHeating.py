@@ -540,6 +540,8 @@ def run_districtheating_model(op):
   "Electricity per annum":electricity,
   "Distance":distance,
   "Heat Waste Recovery":whtnet
+  "Tons Carbon": carbonavoided,
+  "Cubic Meters Water":annualwateravoidance
     
       
         
