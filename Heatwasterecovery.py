@@ -106,13 +106,13 @@ if uploaded_file:
             with col1:
                 st.metric(
                     "Total Profit",
-                    f"${row['Total Profit']:,.0f}"
+                    f"${row['Total Profit']:,.2f}"
                 )
             
             with col2:
                 st.metric(
                     "Total Carbon Saved",
-                    f"{row['Total Carbon Saved']:,.0f}"
+                    f"{row['Total Carbon Saved']:,.2f}"
                 )
             
             with col3:
@@ -134,12 +134,12 @@ if uploaded_file:
             with col2:
                 st.metric(
                     "ERF",
-                    f"{row['ERF']:.1f}"
+                    f"{row['ERF']:.3f}"
                 )
             with col3:
                 st.metric(
                     "Error",
-                    f"{row['Error']:.1f}"
+                    f"{row['Error']:.3f}"
                 )
 
             st.markdown("## Scope 2 Savings")
@@ -149,7 +149,7 @@ if uploaded_file:
             with col1:
                 st.metric(
                     "Scope 2 CO₂ Saved",
-                    f"{row['Tons Carbon']:,.1f} tCO₂"
+                    f"{row['Tons Carbon']:,.2f} tCO₂"
                 )
             
             with col2:
