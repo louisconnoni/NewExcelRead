@@ -541,7 +541,9 @@ def run_model_for_column(op):
   "Maintenance per annum":maintenancecost * (wht/1000000),
   "Electricity per annum":electricity,
   "Distance":distance,
-  "Heat Waste Recovery":whtnet
+  "Heat Waste Recovery":whtnet,
+  "Tons Carbon": carbonavoided,
+  "Cubic Meters Water":annualwateravoidance
         
     }
 
