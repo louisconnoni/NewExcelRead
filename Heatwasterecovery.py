@@ -254,7 +254,7 @@ if uploaded_file:
             row = results_df[results_df["Scenario"] == selected_scenario].iloc[0]
             
             cost_labels = [
-                "Pipe Cost",
+                "Pipe Cost(seperate of data center)",
                 "Pump Cost",
                 "Heat Exchanger Cost",
                 "Yearly Maintenance Cost",
