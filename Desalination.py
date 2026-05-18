@@ -60,7 +60,6 @@ def run_desalination_model(op):
  soiltemp = op[61] #18 temperature of soil surrounding piping
  L_c = op[62] #2000 characteristic distance
  whtnet = wht - mdot*C_p*(TOFFout - (soiltemp+(TOFFout-soiltemp)*np.exp(-distance/L_c))) #accounting for heat lost to ground during transmission
-
  if distance > 5000:
      raise ValueError("Distance exceeds maximum allowable value of 5000.")
  
@@ -69,7 +68,7 @@ def run_desalination_model(op):
  
  # Offtaker
  Vw = op[35]#sre = op[35]#2e9  # Specific regeneration energy, joules per ton CO2 (energy required to regenerate solvent)
- operatingpercent = op[36]#1#0.5  # percent of the time that the CCS plant is operating
+ operatingfraction = op[36]#1#0.5  # percent of the time that the CCS plant is operating
  fuelemission = op[37]#0.202 * (1 / 907.2) * (1 / 1000)  # original heat source CO2 emission coefficient, tons per Wh
  fuelefficiency = op[38]#0.5
  fuelprice =  op[39]#3e-5#5e-5 # fuel price per Wh
@@ -152,7 +151,7 @@ def run_desalination_model(op):
      
  lostopportunity = techtime + acceptancetime + lostoperationtime  # time from proposal to operation in years
  
- variables = np.array([Q, HRE, TDCin, TDCout, TOFFin, TOFFout, LMTDcor, U, HXatov, HXdensity, HXppw, HXcpw, HXwpw, thickness, Rinner, pipedensity, pipppw, pipcpw, pipwpw, distance, C_p, rho, mu, pumpeff, Vw, operatingpercent, fuelemission, fuelefficiency, fuelprice, electricityprice, labor, operation, carbonem, Se, Sc, Sw, Ssocial, S1sub, S2sub, S3sub, S3water, S3food, S3heat, S4sub, jobs, jobsbaseline, social2, social3water, social3food, social3DH, waterscarcity, foodscarcity, heatdemand, heatprice, lostoperationtime, ITenergy, Totalenergy, social4, CTB, carbonsales, shippingemission, techtime, acceptancetime, transport_price, transport_carbon, transport_water, soiltemp, L_c, ewif])
+ variables = np.array([Q, HRE, TDCin, TDCout, TOFFin, TOFFout, LMTDcor, U, HXatov, HXdensity, HXppw, HXcpw, HXwpw, thickness, Rinner, pipedensity, pipppw, pipcpw, pipwpw, distance, C_p, rho, mu, pumpeff, Vw, operatingfraction, fuelemission, fuelefficiency, fuelprice, electricityprice, labor, operation, carbonem, Se, Sc, Sw, Ssocial, S1sub, S2sub, S3sub, S3water, S3food, S3heat, S4sub, jobs, jobsbaseline, social2, social3water, social3food, social3DH, waterscarcity, foodscarcity, heatdemand, heatprice, lostoperationtime, ITenergy, Totalenergy, social4, CTB, carbonsales, shippingemission, techtime, acceptancetime, transport_price, transport_carbon, transport_water, soiltemp, L_c, ewif])
  sensitivities = np.zeros(len(variables))
  uncertainties = np.zeros(len(variables))
  sensitivitieswater = np.zeros(len(variables))
@@ -186,15 +185,15 @@ def run_desalination_model(op):
  
  #principal
  #HX + pipe + transport + pump
- waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
+ waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38 + 2*distance*np.pi*(Rinner)**2#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
  waterprincipal = 1.15 * waterprincipal #installation
  waterprincipal = 1.1 * waterprincipal #engineering
  waterprincipal = 1.1 * waterprincipal #contingency
  #additional increases for machining, installation, transport
  #annualsavings
- annualwaterusage =  electricenergy*ewif*operatingpercent#pumping water to homes may have scope 2 water
- annualwaterproduction = Vw * whtnet * 24 * 365 * operatingpercent
- annualwateravoidance = ewif*whtnet * 24 * 365 * operatingpercent/fuelefficiency #1000 #Scope 2 - will have to calculate based on how much water fossil fuels use - subtract scope 2 electricity used for pumps
+ annualwaterusage =  electricenergy*ewif*operatingfraction#pumping water to homes may have scope 2 water
+ annualwaterproduction = Vw * whtnet * 24 * 365 * operatingfraction
+ annualwateravoidance = ewif*whtnet * 24 * 365 * operatingfraction/fuelefficiency #1000 #Scope 2 - will have to calculate based on how much water fossil fuels use - subtract scope 2 electricity used for pumps
  watersaved = annualwaterproduction + annualwateravoidance - annualwaterusage
  bline0w = -annualwaterusage
  bline1w = annualwaterproduction + annualwateravoidance
@@ -219,9 +218,9 @@ def run_desalination_model(op):
  # annual savings
  carbonremoved = 0#pumping water to homes may have carbon emissions
  # tons CO2 per year removed, offtaker side
- carbonavoided = fuelemission * whtnet * 24 * 365 * operatingpercent/fuelefficiency
+ carbonavoided = fuelemission * whtnet * 24 * 365 * operatingfraction/fuelefficiency
  # scope 2, could be 0 if already using renewable
- othercarbonemissions = carbonem * annualwaterproduction + electricenergy*fuelemission*operatingpercent
+ othercarbonemissions = carbonem * annualwaterproduction + electricenergy*fuelemission*operatingfraction
  # there will be other yearly carbon emissions that must be accounted for
  # such as pump electricity, maintenance and transportation footprints
  # offtaker side
@@ -246,7 +245,7 @@ def run_desalination_model(op):
  #economic
  
  #principal
- econprincipal = 300*(wht/100000)**0.6 + ((pipeweight*pipppw)) + transport_price + 100*(pumppower/373)**0.8#econprincipal = ((HXweight*HXppw) + (pipeweight*pipppw)) + transport_price
+ econprincipal = 3200*(wht/100000)**0.6 + ((pipeweight*pipppw)) + transport_price + 100*60*(pumppower/373)**0.8#econprincipal = ((HXweight*HXppw) + (pipeweight*pipppw)) + transport_price
  econprincipal = 1.15 * econprincipal #installation
  econprincipal = 1.1 * econprincipal #engineering
  econprincipal = 1.1 * econprincipal #contingency
@@ -255,7 +254,7 @@ def run_desalination_model(op):
  #need to add function of distance
  annualcosts = maintenancecost * (wht/1000000) + electricity#assuming flat rate based on capacity - actually more complicated
  #assuming 100k per MW thermal
- annualprofit = fuelprice * whtnet*24*365 * operatingpercent/fuelefficiency #how much the heat is being sold for
+ annualprofit = fuelprice * whtnet*24*365 * operatingfraction/fuelefficiency #how much the heat is being sold for
  moneysaved = annualprofit-annualcosts
  bline0e = -annualcosts
  bline1e = annualprofit
@@ -286,8 +285,7 @@ def run_desalination_model(op):
  econscore1 = econscore
  socialscore1 = socialscore
  
- 
- 
+
  #sensitivity and uncertainty 
  counter = 0
  
@@ -320,7 +318,7 @@ def run_desalination_model(op):
      mu = variables[22]
      pumpeff = variables[23]
      Vw = variables[24]
-     operatingpercent = variables[25]
+     operatingfraction = variables[25]
      fuelemission = variables[26]
      fuelefficiency = variables[27]
      fuelprice = variables[28]
@@ -404,15 +402,15 @@ def run_desalination_model(op):
      #water
  
      #principal
-     waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
+     waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38 + 2*distance*np.pi*(Rinner)**2#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
      waterprincipal = 1.15 * waterprincipal #installation
      waterprincipal = 1.1 * waterprincipal #engineering
      waterprincipal = 1.1 * waterprincipal #contingency
      #additional increases for machining, installation, transport
      #annualsavings
-     annualwaterusage =  electricenergy*ewif*operatingpercent#offtaker side
-     annualwaterproduction = Vw * whtnet * 24 * 365 * operatingpercent
-     annualwateravoidance = ewif * whtnet * 24 * 365 * operatingpercent/fuelefficiency #1000 #Scope 2 - will have to calculate based on how much water fossil fuels use - subtract scope 2 electricity used for pumps
+     annualwaterusage =  electricenergy*ewif*operatingfraction#offtaker side
+     annualwaterproduction = Vw * whtnet * 24 * 365 * operatingfraction
+     annualwateravoidance = ewif * whtnet * 24 * 365 * operatingfraction/fuelefficiency #1000 #Scope 2 - will have to calculate based on how much water fossil fuels use - subtract scope 2 electricity used for pumps
      watersaved = annualwaterproduction + annualwateravoidance - annualwaterusage
      bline0w = -annualwaterusage
      bline1w = annualwaterproduction + annualwateravoidance
@@ -435,9 +433,9 @@ def run_desalination_model(op):
      # annual savings
      carbonremoved = 0
      # tons CO2 per year removed, offtaker side
-     carbonavoided = fuelemission * whtnet * 24 * 365 * operatingpercent/fuelefficiency
+     carbonavoided = fuelemission * whtnet * 24 * 365 * operatingfraction/fuelefficiency
      # scope 2, could be 0 if already using renewable
-     othercarbonemissions = carbonem * annualwaterproduction + electricenergy*fuelemission*operatingpercent
+     othercarbonemissions = carbonem * annualwaterproduction + electricenergy*fuelemission*operatingfraction
      # there will be other yearly carbon emissions that must be accounted for
      # such as pump electricity, maintenance and transportation footprints
      # offtaker side
@@ -462,7 +460,7 @@ def run_desalination_model(op):
      #economic
  
      #principal
-     econprincipal = 300*(wht/100000)**0.6 + ((pipeweight*pipppw)) + transport_price + 100*(pumppower/373)**0.8#econprincipal = ((HXweight*HXppw) + (pipeweight*pipppw)) + transport_price
+     econprincipal = 3200*(wht/100000)**0.6 + ((pipeweight*pipppw)) + transport_price + 100*60*(pumppower/373)**0.8#econprincipal = ((HXweight*HXppw) + (pipeweight*pipppw)) + transport_price
      econprincipal = 1.15 * econprincipal #installation
      econprincipal = 1.1 * econprincipal #engineering
      econprincipal = 1.1 * econprincipal #contingency
@@ -471,7 +469,7 @@ def run_desalination_model(op):
      #need to add function of distance
      annualcosts = maintenancecost * (wht/1000000) + electricity#assuming flat rate based on capacity - actually more complicated
      #assuming 100k per MW thermal
-     annualprofit = fuelprice * whtnet*24*365 * operatingpercent/fuelefficiency#how much the heat is being sold for
+     annualprofit = fuelprice * whtnet*24*365 * operatingfraction/fuelefficiency#how much the heat is being sold for
      moneysaved = annualprofit-annualcosts
      bline0e = -annualcosts
      bline1e = annualprofit
@@ -513,7 +511,7 @@ def run_desalination_model(op):
  values = [totalscore, carbonscore, econscore, waterscore, socialscore]
  # Define symmetric error values for each bar
  errors = [abs(np.linalg.norm(uncertainties)), abs(np.linalg.norm(uncertaintiescarbon)), abs(np.linalg.norm(uncertaintiesecon)), abs(np.linalg.norm(uncertaintieswater)), abs(np.linalg.norm(uncertaintiessocial))]
-
+ 
 
  
 
