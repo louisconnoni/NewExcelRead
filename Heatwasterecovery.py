@@ -286,7 +286,7 @@ if uploaded_file:
             ax.set_xlabel("Cost ($)")
             ax.set_title(f"Economic Cost Breakdown: {selected_scenario}")
             
-            st.pyplot(fig,help = "help")
+            st.pyplot(fig,)
 
     else:
         st.info("Click 'Run Model for All Sheets' to generate results.")
