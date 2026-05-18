@@ -112,13 +112,13 @@ if uploaded_file:
             with col2:
                 st.metric(
                     "Total Carbon Saved",
-                    f"{row['Total Carbon Saved']:,.2f}"
+                    f"{row['Total Carbon Saved']:,.2f} tCO₂"
                 )
             
             with col3:
                 st.metric(
                     "Total Water Saved",
-                    f"{row['Total Water Saved']:.2f}"
+                    f"{row['Total Water Saved']:.2f} m³ "
                 )
 
             st.markdown("## Error Metrics")
@@ -128,7 +128,7 @@ if uploaded_file:
             with col1:
                 st.metric(
                     "ERE Improvement",
-                    f"{row['ERE improvement']:.3f}"
+                    f"{row['ERE improvement']:.3f}%"
                 )
             
             with col2:
