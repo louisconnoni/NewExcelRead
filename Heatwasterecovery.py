@@ -92,13 +92,14 @@ if uploaded_file:
             (results_df["Total Profit"] - results_df["Total Profit"].min()) /
             (results_df["Total Profit"].max() - results_df["Total Profit"].min())
         )
-        
+
+        """
         # Social Score
         results_df["Social Score"] = (
             (results_df["Social Score"] - results_df["Social Score"].min()) /
             (results_df["Social Score"].max() - results_df["Social Score"].min())
         )
-
+"""
         # Saving results
         st.session_state["results_df"] = results_df
 
