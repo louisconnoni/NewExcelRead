@@ -100,6 +100,14 @@ if uploaded_file:
             (results_df["Social Score"].max() - results_df["Social Score"].min())
         )
 """
+
+        results_df["Total Score"] = (
+        results_df["Water Weight"] * results_df["Water Score"] +
+        results_df["Social Weight"] * results_df["Social Score"] +
+        results_df["Economic Weight"] * results_df["Economic Score"] +
+        results_df["Carbon Weight"] * results_df["Carbon Score"]
+    )
+        
         # Saving results
         st.session_state["results_df"] = results_df
 
