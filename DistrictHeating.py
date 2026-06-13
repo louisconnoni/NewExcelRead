@@ -355,7 +355,7 @@ def run_districtheating_model(op, idx):
       "Scope 2 savings: Cubic meters Water": annualwateravoidance
       }
   
-  datarows.append(dataoutput)
+  #datarows.append(dataoutput)
   
   newuncertaintyvector = np.linspace(0, 1, len(variables))
   neweconuncertainty = np.linspace(0, 1, len(variables))
