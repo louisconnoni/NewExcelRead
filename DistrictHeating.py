@@ -610,7 +610,7 @@ def run_districtheating_model(op, idx):
   
   categories = ['Total Score', 'Carbon Score', 'Economic Score', 'Water Score', 'Social Score']
   #values = [totalscore, carbonscore, econscore, waterscore, socialscore]
-  values = [newtotal, newsubs[1], newsubs[0], newsubs[2], socialscore]
+  values = [newtotal, newsubs.iloc[1], newsubs.iloc[0], newsubs.iloc[2], socialscore]
   # Define symmetric error values for each bar
   #errors = [abs(np.linalg.norm(uncertainties)), abs(np.linalg.norm(uncertaintiescarbon)), abs(np.linalg.norm(uncertaintiesecon)), abs(np.linalg.norm(uncertaintieswater)), abs(np.linalg.norm(uncertaintiessocial))]
       
