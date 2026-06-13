@@ -13,7 +13,7 @@ import numpy_financial as nf
 import NewScoring as ns
 
 
-def run_districtheating_model(op,idx):
+def run_districtheating_model(op, idx):
   index=idx
   #Raza
 
