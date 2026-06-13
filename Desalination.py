@@ -15,7 +15,7 @@ import NewScoring as ns
 
 
 def run_desalination_model(op, idx):
- index = idx
+ index = idx+1
 
  #-
  ## Razas portions
