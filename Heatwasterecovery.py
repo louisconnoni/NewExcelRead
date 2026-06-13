@@ -62,7 +62,7 @@ if uploaded_file:
                 op = df[col]
 
                 try:
-                    result = model_function(op,idx)
+                    result = model_function(op, idx)
 
                     result["Scenario"] = f"{model_label} - {col}"
                     result["System"] = model_label
