@@ -654,7 +654,8 @@ def run_model_for_column(op, idx):
   "Distance":distance,
   "Heat Waste Recovery":whtnet,
   "Tons Carbon": carbonavoided,
-  "Cubic Meters Water":annualwateravoidance
+  "Cubic Meters Water":annualwateravoidance,
+  "index":index
         
     }
 
