@@ -14,7 +14,7 @@ import NewScoring as ns
 
 
 def run_districtheating_model(op, idx):
-  index=idx
+  index=idx+1
   #Raza
 
   Q = op[2]#1e6  # waste heat transferred to CCS, watts
