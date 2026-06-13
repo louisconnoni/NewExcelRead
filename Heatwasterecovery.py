@@ -74,45 +74,6 @@ if uploaded_file:
 
         results_df = pd.DataFrame(results_list)
 
-        """
-        # Water Score
-        results_df["Water Score"] = (
-            (results_df["Total Water Saved"] - results_df["Total Water Saved"].min()) /
-            (results_df["Total Water Saved"].max() - results_df["Total Water Saved"].min())
-        )
-        """
-        """
-        # Carbon Score
-        results_df["Carbon Score"] = (
-            (results_df["Total Carbon Saved"] - results_df["Total Carbon Saved"].min()) /
-            (results_df["Total Carbon Saved"].max() - results_df["Total Carbon Saved"].min())
-        )
-        """
-        """
-        # Economic Score
-        results_df["Economic Score"] = (
-            (results_df["Total Profit"] - results_df["Total Profit"].min()) /
-            (results_df["Total Profit"].max() - results_df["Total Profit"].min())
-        )
-        """
-
-        """
-        # Social Score
-        results_df["Social Score"] = (
-            (results_df["Social Score"] - results_df["Social Score"].min()) /
-            (results_df["Social Score"].max() - results_df["Social Score"].min())
-        )
-"""
-"""
-        results_df["Total Score"] = (
-        results_df["Water Weight"] * results_df["Water Score"] +
-        results_df["Social Weight"] * results_df["Social Score"] +
-        results_df["Economic Weight"] * results_df["Economic Score"] +
-        results_df["Carbon Weight"] * results_df["Carbon Score"]
-    )
-"""
-
-
         # Saving results
         st.session_state["results_df"] = results_df
 
