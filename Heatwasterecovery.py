@@ -57,12 +57,12 @@ if uploaded_file:
                 continue
 
             # Scenario Loop
-            for col in df.columns[1:]:
+            for idx, col in enumerate(df.columns[1:]):
 
                 op = df[col]
 
                 try:
-                    result = model_function(op)
+                    result = model_function(op,idx)
 
                     result["Scenario"] = f"{model_label} - {col}"
                     result["System"] = model_label
