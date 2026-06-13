@@ -13,7 +13,8 @@ import numpy_financial as nf
 import NewScoring as ns
 
 
-def run_districtheating_model(op):
+def run_districtheating_model(op,idx):
+  index=idx
   #Raza
 
   Q = op[2]#1e6  # waste heat transferred to CCS, watts
