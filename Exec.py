@@ -14,7 +14,7 @@ import numpy_financial as nf
 import NewScoring as ns
 
 
-def run_model_for_column(op,idx):
+def run_model_for_column(op, idx):
  index = idx
  #-
  ## Razas portions
