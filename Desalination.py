@@ -14,7 +14,8 @@ import numpy_financial as nf
 import NewScoring as ns
 
 
-def run_desalination_model(op):
+def run_desalination_model(op,idx):
+ index = idx
 
  #-
  ## Razas portions
