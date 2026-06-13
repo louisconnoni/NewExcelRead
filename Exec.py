@@ -15,7 +15,7 @@ import NewScoring as ns
 
 
 def run_model_for_column(op, idx):
- index = idx
+ index = idx+1
  #-
  ## Razas portions
  Q = op[2]#1e6  # waste heat transferred to CCS, watts
