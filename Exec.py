@@ -11,6 +11,7 @@ import numpy_financial as nf
 import numpy as np
 import math
 import numpy_financial as nf
+import NewScoring as ns
 
 
 def run_model_for_column(op):
@@ -41,8 +42,40 @@ def run_model_for_column(op):
  weightpermeter = (np.pi*(Rinner+thickness)**2 - np.pi*(Rinner)**2)*pipedensity
  # to calculate radii required, will need to figure out flow rate and pressure drop - need physics model
  # heat transferred to offtaker is a function of flow rate, which is a function of fluid properties, pipe friction, pressure drop, inlet/outlet temperatures
+ 
+ #insulation
+ insthickness = 0.01
+ insvpm = np.pi*((Rinner+thickness+insthickness)**2-(Rinner+thickness)**2)
+ insdensity = 300
+ inswpm = insvpm*insdensity
+ insprice = 5
+ insconductivity = 0.025
+ 
  distance = op[34]#300  # distance offtaker is from datacenter in m
 
+ latDC = op[75]
+ lonDC = op[76]
+ latOFF = op[77]
+ lonOFF = op[78]
+ 
+ 
+ R_earth = 6371.0  # Earth radius in km
+
+ # convert degrees -> radians
+ latDC, lonDC, latOFF, lonOFF = map(math.radians, [latDC, lonDC, latOFF, lonOFF])
+
+ # differences
+ dlat = latOFF - latDC
+ dlon = lonOFF - lonDC
+
+ # haversine formula
+ a_distance = math.sin(dlat / 2)**2 + math.cos(latDC) * math.cos(latOFF) * math.sin(dlon / 2)**2
+ c_distance = 2 * math.atan2(math.sqrt(a_distance), math.sqrt(1 - a_distance))
+
+ distance_1 = R_earth * c_distance*1000
+
+ if(distance_1>0):
+     distance = distance_1
  #PHYSICS#
  #DC - OFFTAKER CONNECTION
  C_p = op[5]#3740 #specific heat 30% propylene glycol mixture
@@ -56,8 +89,23 @@ def run_model_for_column(op):
  deltap = (friction * 2* distance * rho * vel**2)/(2*Rinner*2) + 68947.6#pressure drop, add 10psi drop for HX
  pumpeff = op[8]#0.6 #pump efficiency
  pumppower = deltap*vel*ACS/pumpeff #pump power calculated from pressure drop
+ 
+ 
+ 
  soiltemp = op[61] #18 temperature of soil surrounding piping
- L_c = op[62] #2000 characteristic distance
+ soilconductivity = 3
+ burialdepth = 2 #depth pipes are buried - can add "convection depth" for convection at ground surface
+ Rs = np.log(2*burialdepth/(Rinner+thickness+insthickness))/(2*np.pi*soilconductivity) #soil resistance formula per length
+ fluidconductivity = 0.45 #propylene glycol solution thermal conductivity
+ Pr = C_p*mu/fluidconductivity #prandtl number
+ Nu = (0.023*Re**0.8)*Pr**0.3 #nusselt number turbulent pipe flow
+ hpipe = Nu * fluidconductivity/(2*Rinner) #internal pipe convection coefficient
+ Rinternal = 1/(hpipe*2*np.pi*Rinner) #internal pipe convection resistance per length
+ Rpipe = np.log((Rinner+thickness)/Rinner)/(2*np.pi*0.45)
+ Rinsulation = np.log((Rinner+thickness+insthickness)/(Rinner+thickness))/(2*np.pi*insconductivity)
+ Rtotal = Rs+Rinternal+Rpipe+Rinsulation #total thermal resistance
+ L_c = mdot*C_p*Rtotal #characteristic distance formula
+ #L_c = op[62] #2000 characteristic distance
  whtnet = wht - mdot*C_p*(TOFFout - (soiltemp+(TOFFout-soiltemp)*np.exp(-distance/L_c))) #accounting for heat lost to ground during transmission
 
  if distance > 5000:
@@ -146,12 +194,13 @@ def run_model_for_column(op):
  transport_price = op[72]
  transport_carbon = op[73]
  transport_water = op[74]
+
  
  socialscore = S1sub*social1 + S2sub*social2 + S3sub*social3 + S4sub*social4
      
  lostopportunity = techtime + acceptancetime + lostoperationtime  # time from proposal to operation in years
  
- variables = np.array([Q, HRE, TDCin, TDCout, TOFFin, TOFFout, LMTDcor, U, HXatov, HXdensity, HXppw, HXcpw, HXwpw, thickness, Rinner, pipedensity, pipppw, pipcpw, pipwpw, distance, C_p, rho, mu, pumpeff, sre, operatingfraction, fuelemission, fuelefficiency, fuelprice, electricityprice, labor, operation, wateruse, Se, Sc, Sw, Ssocial, S1sub, S2sub, S3sub, S3water, S3food, S3heat, S4sub, jobs, jobsbaseline, social2, social3water, social3food, social3DH, waterscarcity, foodscarcity, heatdemand, heatprice, lostoperationtime, ITenergy, Totalenergy, social4, CTB, carbonsales, shippingemission, techtime, acceptancetime, transport_price, transport_carbon, transport_water, soiltemp, L_c, ewif])
+ variables = np.array([Q, HRE, TDCin, TDCout, TOFFin, TOFFout, LMTDcor, U, HXatov, HXdensity, HXppw, HXcpw, HXwpw, thickness, Rinner, pipedensity, pipppw, pipcpw, pipwpw, distance, C_p, rho, mu, pumpeff, sre, operatingfraction, fuelemission, fuelefficiency, fuelprice, electricityprice, labor, operation, wateruse, Se, Sc, Sw, Ssocial, S1sub, S2sub, S3sub, S3water, S3food, S3heat, S4sub, jobs, jobsbaseline, social2, social3water, social3food, social3DH, waterscarcity, foodscarcity, heatdemand, heatprice, lostoperationtime, ITenergy, Totalenergy, social4, CTB, carbonsales, shippingemission, techtime, acceptancetime, transport_price, transport_carbon, transport_water, soiltemp, ewif])
  sensitivities = np.zeros(len(variables))
  uncertainties = np.zeros(len(variables))
  sensitivitieswater = np.zeros(len(variables))
@@ -184,7 +233,7 @@ def run_model_for_column(op):
  # carbon
  # principal
  #HX + pipe + transport + pump
- carbonprincipal = 16.52*(wht/1000)+348 + 3.787*weightpermeter*2*distance + transport_carbon + 0.057*pumppower + 6.82#((HXweight * HXcpw) + (pipeweight * pipcpw)) + transport_carbon
+ carbonprincipal = 16.52*(wht/1000)+348 + 3.787*weightpermeter*2*distance + transport_carbon + 0.057*pumppower + 6.82 + inswpm*2*distance*6.004#6.82 is pump intercept((HXweight * HXcpw) + (pipeweight * pipcpw)) + transport_carbon
  carbonprincipal = 1.15 * carbonprincipal #installation
  carbonprincipal = 1.1 * carbonprincipal #engineering
  carbonprincipal = 1.1 * carbonprincipal #contingency
@@ -220,7 +269,7 @@ def run_model_for_column(op):
  #economic
  
  #principal
- econprincipal = 3200*(wht/100000)**0.6 + ((pipeweight*pipppw)) + transport_price + 100*60*(pumppower/373)**0.8#econprincipal = ((HXweight*HXppw) + (pipeweight*pipppw)) + transport_price
+ econprincipal = 3200*(wht/100000)**0.6 + ((pipeweight*pipppw)) + transport_price + 100*60*(pumppower/373)**0.8 + inswpm*2*distance*5#econprincipal = ((HXweight*HXppw) + (pipeweight*pipppw)) + transport_price
  econprincipal = 1.15 * econprincipal #installation
  econprincipal = 1.1 * econprincipal #engineering
  econprincipal = 1.1 * econprincipal #contingency
@@ -249,7 +298,7 @@ def run_model_for_column(op):
  
  #principal
  #HX + pipe + transport + pump
- waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38 + 2*distance*np.pi*(Rinner)**2#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
+ waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38 + 2*distance*np.pi*(Rinner)**2 + inswpm*2*distance*1.82#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
  waterprincipal = 1.15 * waterprincipal #installation
  waterprincipal = 1.1 * waterprincipal #engineering
  waterprincipal = 1.1 * waterprincipal #contingency
@@ -283,14 +332,46 @@ def run_model_for_column(op):
  econscore1 = econscore
  socialscore1 = socialscore
  
-
+ 
+ 
  #sensitivity and uncertainty 
  counter = 0
  
+ dataoutput = {
+     "Offtaker": index,
+     "Total Profit (USD)": totalprofit,
+     "Total Carbon Saved (tons)": totalcarbonsaved,
+     "Total Water Saved (cubic meters)": totalwatersaved,
+     "Social Score (0 to 1)": socialscore,
+     "Pipes (USD)": pipeweight*pipppw, 
+     "Pumps (USD)": 100*60*(pumppower/373)**0.8, 
+     "Heat Exchanger (USD)": 3200*(wht/100000)**0.6, 
+     "Maintenance per annum (USD)": maintenancecost * (wht/1000000), 
+     "Electricity per annum (USD)": electricity,
+     "ERE improvement (%)": EREpercent*-1, 
+     "ERF": ERF,
+     "Scope 2 savings: Tons Carbon": carbonavoided, 
+     "Scope 2 savings: Cubic meters Water": annualwateravoidance
+     }
+ 
+ datarows.append(dataoutput)
+ 
+ newuncertaintyvector = np.linspace(0, 1, len(variables))
+ neweconuncertainty = np.linspace(0, 1, len(variables))
+ newcarbonuncertainty = np.linspace(0, 1, len(variables))
+ newwateruncertainty = np.linspace(0, 1, len(variables))
+ #newsocialuncertainty = np.linspace(0, 1, len(variables))
+ baseline_variables = variables.copy()
+ baseline_profit = totalprofit
+ baseline_carbon = totalcarbonsaved
+ baseline_water = totalwatersaved
+ baseline_social = socialscore
+ 
  while(counter<len(variables)):
-     if(counter > 0):
-         variables[counter-1] = variables[counter-1]/1.01
-     variables[counter] = variables[counter] * 1.01
+     variables = baseline_variables.copy()
+     variables[counter] *= 1.01
+     
+     #variables[counter] = variables[counter] * 1.01
      Q = variables[0]
      HRE = variables[1]
      TDCin = variables[2]
@@ -358,11 +439,14 @@ def run_model_for_column(op):
      transport_carbon = variables[64]
      transport_water = variables[65]
      soiltemp = variables[66]
-     L_c = variables[67]
-     ewif = variables[68]
+     #L_c = variables[67]
+     ewif = variables[67]
      
      wht = Q*HRE
      weightpermeter = (np.pi*(Rinner+thickness)**2 - np.pi*(Rinner)**2)*pipedensity
+     insvpm = np.pi*((Rinner+thickness+insthickness)**2-(Rinner+thickness)**2)
+     
+     inswpm = insvpm*insdensity
      ACS = np.pi*(Rinner**2) #pipe cross section
      mdot = wht/(C_p*(TOFFout-TOFFin)) #mass flow rate
      vel = mdot/(rho*ACS) #velocity
@@ -370,9 +454,25 @@ def run_model_for_column(op):
      friction = 0.316/(Re**0.25) #friction factor assuming smooth pipe
      deltap = (friction * 2* distance * rho * vel**2)/(2*Rinner*2) + 68947.6#pressure drop, add 10psi drop for HX
      pumppower = deltap*vel*ACS/pumpeff 
-     whtnet = wht - mdot*C_p*(TOFFout - (soiltemp+(TOFFout-soiltemp)*np.exp(-distance/L_c))) #accounting for heat lost to ground during transmission
-     electricity = pumppower*24*365*electricityprice*2 #pump electricity, x2 assuming offtaker uses same pump power
-     maintenancecost = labor+electricity+operation  # will need to break this down and do a more refined calculation later
+     soilconductivity = 3
+     burialdepth = 2
+     Rs = np.log(2*burialdepth/(Rinner+thickness+insthickness))/(2*np.pi*soilconductivity)
+     fluidconductivity = 0.45
+     Pr = C_p*mu/fluidconductivity
+     Nu = (0.023*Re**0.8)*Pr**0.3
+     hpipe = Nu * fluidconductivity/(2*Rinner)
+     Rinternal = 1/(hpipe*2*np.pi*Rinner)
+     Rpipe = np.log((Rinner+thickness)/Rinner)/(2*np.pi*0.45)
+     Rinsulation = np.log((Rinner+thickness+insthickness)/(Rinner+thickness))/(2*np.pi*insconductivity)
+     Rtotal = Rs+Rinternal+Rpipe+Rinsulation #total thermal resistance
+     L_c = mdot*C_p*Rtotal
+     #L_c = op[62] #2000 characteristic distance
+     whtnet = wht - mdot*C_p*(TOFFout - (soiltemp+(TOFFout-soiltemp)*np.exp(-distance/L_c)))
+     #whtnet = wht - mdot*C_p*(TOFFout - (soiltemp+(TOFFout-soiltemp)*np.exp(-distance/L_c))) #accounting for heat lost to ground during transmission
+     electricity = pumppower*24*365*electricityprice #pump electricity cost
+     electricenergy = pumppower*24*365 #pump electricity energy
+     #electricity = pumppower*24*365*electricityprice*2 #pump electricity, x2 assuming offtaker uses same pump power
+     maintenancecost = labor+operation  # will need to break this down and do a more refined calculation later
      social1 = ((jobs/jobsbaseline)*0.333)/0.333
      heatscarcity = heatdemand * heatprice
      social3 = S3water*social3water*waterscarcity+ S3food*social3food*foodscarcity + S3heat*social3DH*heatscarcity
@@ -399,7 +499,7 @@ def run_model_for_column(op):
  
      # carbon
      # principal
-     carbonprincipal = 16.52*(wht/1000)+348 + 3.787*weightpermeter*2*distance + transport_carbon + 0.057*pumppower + 6.82#((HXweight * HXcpw) + (pipeweight * pipcpw)) + transport_carbon
+     carbonprincipal = 16.52*(wht/1000)+348 + 3.787*weightpermeter*2*distance + transport_carbon + 0.057*pumppower + 6.82 + inswpm*2*distance*6.004#((HXweight * HXcpw) + (pipeweight * pipcpw)) + transport_carbon
      carbonprincipal = 1.15 * carbonprincipal #installation
      carbonprincipal = 1.1 * carbonprincipal #engineering
      carbonprincipal = 1.1 * carbonprincipal #contingency
@@ -435,7 +535,7 @@ def run_model_for_column(op):
      #economic
  
      #principal
-     econprincipal = 3200*(wht/100000)**0.6 + ((pipeweight*pipppw)) + transport_price + 100*60*(pumppower/373)**0.8#econprincipal = ((HXweight*HXppw) + (pipeweight*pipppw)) + transport_price
+     econprincipal = 3200*(wht/100000)**0.6 + ((pipeweight*pipppw)) + transport_price + 100*60*(pumppower/373)**0.8 + inswpm*2*distance*5#econprincipal = ((HXweight*HXppw) + (pipeweight*pipppw)) + transport_price
      econprincipal = 1.15 * econprincipal #installation
      econprincipal = 1.1 * econprincipal #engineering
      econprincipal = 1.1 * econprincipal #contingency
@@ -463,7 +563,7 @@ def run_model_for_column(op):
      #water
  
      #principal
-     waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38 + 2*distance*np.pi*(Rinner)**2#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
+     waterprincipal = 6.57*(wht/1000)+119.33+ (1.21*weightpermeter + 0.001)*2*distance + transport_water + 0.025*pumppower + 3.38 + 2*distance*np.pi*(Rinner)**2 + inswpm*2*distance*1.82#((HXweight*HXwpw) + (pipeweight*pipwpw)) + transport_water
      waterprincipal = 1.15 * waterprincipal #installation
      waterprincipal = 1.1 * waterprincipal #engineering
      waterprincipal = 1.1 * waterprincipal #contingency
@@ -502,13 +602,23 @@ def run_model_for_column(op):
      sensitivitiessocial[counter] = (socialscore-socialscore1)/(0.01*(variables[counter]/1.01))
      uncertaintiessocial[counter] = abs(sensitivitiessocial[counter] * 0.1 * variables[counter]/1.01)
      
+     newuncertaintyvector[counter], neweconuncertainty[counter], newcarbonuncertainty[counter], newwateruncertainty[counter], newtotal, newsubs = ns.calculate(baseline_profit, baseline_carbon, baseline_water, baseline_social, totalprofit, totalcarbonsaved, totalwatersaved, socialscore, index, variables[counter])
+     
      counter = counter + 1
 
  
  categories = ['Total Score', 'Carbon Score', 'Economic Score', 'Water Score', 'Social Score']
- values = [totalscore, carbonscore, econscore, waterscore, socialscore]
+ #values = [totalscore, carbonscore, econscore, waterscore, socialscore]
+ values = [newtotal, newsubs[1], newsubs[0], newsubs[2], socialscore]
  # Define symmetric error values for each bar
- errors = [abs(np.linalg.norm(uncertainties)), abs(np.linalg.norm(uncertaintiescarbon)), abs(np.linalg.norm(uncertaintiesecon)), abs(np.linalg.norm(uncertaintieswater)), abs(np.linalg.norm(uncertaintiessocial))]
+ #errors = [abs(np.linalg.norm(uncertainties)), abs(np.linalg.norm(uncertaintiescarbon)), abs(np.linalg.norm(uncertaintiesecon)), abs(np.linalg.norm(uncertaintieswater)), abs(np.linalg.norm(uncertaintiessocial))]
+     
+ newtotalerror = abs(np.linalg.norm(newuncertaintyvector))
+ neweconerror = abs(np.linalg.norm(neweconuncertainty))
+ newcarbonerror =abs(np.linalg.norm(newcarbonuncertainty))
+ newwatererror = abs(np.linalg.norm(newwateruncertainty))
+ 
+ errors = [newtotalerror, newcarbonerror, neweconerror, newwatererror, abs(np.linalg.norm(uncertaintiessocial))]
  
 
 
@@ -519,11 +629,11 @@ def run_model_for_column(op):
   "Total Profit": totalprofit,
   "Total Carbon Saved": totalcarbonsaved,
   "Total Water Saved": totalwatersaved,
-  "Total Score" : totalscore,
-  "Carbon Score": carbonscore,
-  "Water Score": waterscore,
-  "Economic Score": econscore,
-  "Social Score": socialscore,
+  "Total Score" : values[0],
+  "Carbon Score": values[1],
+  "Water Score": values[3],
+  "Economic Score": values[2],
+  "Social Score": values[4],
   "ERE improvement": EREpercent*-1,
   "ERF" : ERF,
   "Error": errors[0],
