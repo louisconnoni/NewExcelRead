@@ -14,7 +14,8 @@ import numpy_financial as nf
 import NewScoring as ns
 
 
-def run_model_for_column(op):
+def run_model_for_column(op,idx):
+ index = idx
  #-
  ## Razas portions
  Q = op[2]#1e6  # waste heat transferred to CCS, watts
