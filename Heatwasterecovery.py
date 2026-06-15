@@ -139,7 +139,7 @@ if uploaded_file:
             with col3:
                 st.metric(
                     "",
-                    f"{"N/A}"
+                    f"{"N/A"}"
                 )
 
             st.markdown("## Scope 2 Savings")
