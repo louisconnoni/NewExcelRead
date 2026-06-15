@@ -331,6 +331,7 @@ if uploaded_file:
             
             cost_labels = [
                 "Pipe Cost(Seperate of Data Center)",
+                "Insulation Cost",
                 "Pump Cost",
                 "Heat Exchanger Cost",
                 "Yearly Maintenance Cost",
@@ -339,6 +340,7 @@ if uploaded_file:
             
             cost_values = [
                 row["Pipe Cost"],
+                row[""Insulation Cost"],
                 row["Pump Cost"],
                 row["Heat Exchanger Cost"],
                 row["Maintenance per annum"],
