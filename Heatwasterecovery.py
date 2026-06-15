@@ -340,7 +340,7 @@ if uploaded_file:
             
             cost_values = [
                 row["Pipe Cost"],
-                row[""Insulation Cost"],
+                row["Insulation Cost"],
                 row["Pump Cost"],
                 row["Heat Exchanger Cost"],
                 row["Maintenance per annum"],
