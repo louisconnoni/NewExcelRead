@@ -42,15 +42,15 @@ if uploaded_file:
             
             if sheet_name.lower() == "ccs":
                 model_function = run_model_for_column
-                model_label = "CCS"
+                model_label = "C"
 
             elif sheet_name.lower() == "desalination":
                 model_function = run_desalination_model
-                model_label = "Desalination"
+                model_label = "D"
                 
             elif sheet_name.lower() == "district heating":
                 model_function = run_districtheating_model
-                model_label = "District Heating"
+                model_label = "D"
 
             else:
                 st.warning(f"Skipping unknown sheet: {sheet_name}")
