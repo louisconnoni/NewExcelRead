@@ -648,6 +648,7 @@ def run_districtheating_model(op, idx):
   "Carbon Weight":Sc,
   "Social Weight":Ssocial,
   "Pipe Cost":pipeweight*pipppw,
+  "Insulation Cost":inswpm*2*distance*5,
   "Pump Cost":100*60*(pumppower/373)**0.8,
   "Heat Exchanger Cost":3200*(wht/100000)**0.6,
   "Maintenance per annum":maintenancecost * (wht/1000000),
