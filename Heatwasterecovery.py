@@ -138,8 +138,8 @@ if uploaded_file:
                 )
             with col3:
                 st.metric(
-                    "Error",
-                    f"{row['Error']:.3f}"
+                    "",
+                    f"{"N/A}"
                 )
 
             st.markdown("## Scope 2 Savings")
