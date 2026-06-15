@@ -42,15 +42,15 @@ if uploaded_file:
             
             if sheet_name.lower() == "ccs":
                 model_function = run_model_for_column
-                model_label = ""
+                model_label = "CCS"
 
             elif sheet_name.lower() == "desalination":
                 model_function = run_desalination_model
-                model_label = ""
+                model_label = "Desalination"
                 
             elif sheet_name.lower() == "district heating":
                 model_function = run_districtheating_model
-                model_label = ""
+                model_label = "District Heating"
 
             else:
                 st.warning(f"Skipping unknown sheet: {sheet_name}")
@@ -64,7 +64,7 @@ if uploaded_file:
                 try:
                     result = model_function(op, idx)
 
-                    result["Scenario"] = f"{model_label}  {col}"
+                    result["Scenario"] = f"{model_label}:  {col}"
                     result["System"] = model_label
 
                     results_list.append(result)
