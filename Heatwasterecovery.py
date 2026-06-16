@@ -346,10 +346,21 @@ if uploaded_file:
                 row["Maintenance per annum"],
                 row["Electricity per annum"]
             ]
+
+            
             
             fig, ax = plt.subplots()
             
-            bars = ax.barh(cost_labels, cost_values)
+            colors = [
+                "#1f77b4",   # Pipe
+                "#1f77b4",   # Insulation
+                "#1f77b4",   # Pump
+                "#ff7f0e",   # Heat Exchanger
+                "#ff7f0e",  # Maintenance
+                "#1f77b4"   # Electricity
+            ]
+            
+            bars = ax.barh(cost_labels, cost_values, color = colors)
             
             for bar in bars:
                 width = bar.get_width()
@@ -363,6 +374,14 @@ if uploaded_file:
             
             ax.set_xlabel("Cost ($)")
             ax.set_title(f"Economic Cost Breakdown: {selected_scenario}")
+            from matplotlib.patches import Patch
+
+            legend_elements = [
+                Patch(facecolor="#1f77b4", label="Non Data Center Costs"),
+                Patch(facecolor="#ff7f0e", label="Data Center Costs")
+            ]
+
+            ax.legend(handles=legend_elements)
             
             st.pyplot(fig,)
 
