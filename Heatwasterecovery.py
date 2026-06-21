@@ -53,7 +53,7 @@ if uploaded_file:
                 model_function = run_districtheating_model
                 model_label = ""
 
-             elif sheet_name.lower() == "new":
+            elif sheet_name.lower() == "new":
                 model_function = run_new_model
                 model_label = ""
                  
