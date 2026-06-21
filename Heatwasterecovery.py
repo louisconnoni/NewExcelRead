@@ -10,6 +10,7 @@ import numpy as np
 from Exec import run_model_for_column          # CCS
 from Desalination import run_desalination_model # Desalination
 from DistrictHeating import run_districtheating_model
+from new import run_new_model
 
 st.set_page_config(layout="wide")
 st.title("Heat Waste Recovery Tool")
@@ -52,6 +53,10 @@ if uploaded_file:
                 model_function = run_districtheating_model
                 model_label = ""
 
+             elif sheet_name.lower() == "new":
+                model_function = run_new_model
+                model_label = ""
+                 
             else:
                 st.warning(f"Skipping unknown sheet: {sheet_name}")
                 continue
